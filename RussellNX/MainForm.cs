@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-//using System.Windows.Input;
 using System.IO;
 using System.Xml;
 using System.Diagnostics;
+
+//INI library
 using IniParser;
 using IniParser.Model;
 using IniParser.Parser;
-//using System.Text.Json;
 
 namespace RussellNX
 {
@@ -23,13 +23,30 @@ namespace RussellNX
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-2.2.3.344"; // Runtime is hard coded for now... waiting for SDK updates or smth.
         public static string FriendlyYYPName = "";
         public static string GameIconPath = Application.StartupPath + "\\default_icon.jpg";
-        public static string RNXVersionString = "1.0.1";
+        public static string RNXVersionString = "1.1.0";
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
         public MainForm()
         {
             InitializeComponent();
+
+            //Check for write access first.
+            try
+            {
+                File.WriteAllText(Application.StartupPath + "\\dircheck.txt", "");
+            }
+            catch (Exception e)
+            {
+                //for some reason this messagebox doesn't wanna show up (??)
+                MessageBox.Show("ERROR!\nYour current RussellNX directory doesn't have Read Write permissions.\nPlease move RussellNX to Desktop, Documents, Downloads heck, everywhere else!\n\nException: " + e.ToString(), "Idiot Check Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(-1);
+                return;
+            }
+            File.Delete(Application.StartupPath + "\\dircheck.txt");
+            //I mean, if this check passed, this file should exist, if check failed, program exits before this line executes.
+
+            if (Debugger.IsAttached) Text += " (Running inside Visual Studio)";
 
             if (!File.Exists(Application.StartupPath + "\\RussellNX.ini"))
             {
