@@ -356,6 +356,15 @@ namespace RussellNX
         }
         private void DefaultSettings()
         {
+            //Migrate KeysFilePath 1.0 config
+            if (File.Exists(Application.StartupPath+"\\KeysFilePath"))
+            {
+                string kpath = File.ReadAllText(Application.StartupPath + "\\KeysFilePath");
+                KeysBox.Text = kpath;
+                File.Delete(Application.StartupPath + "\\KeysFilePath");
+            }
+
+            //Populate default settings file.
             string fname = Application.StartupPath + "\\RussellNX.ini";
             File.WriteAllText(fname, "");
             var parser = new FileIniDataParser();
