@@ -23,7 +23,7 @@ namespace RussellNX
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-2.2.3.344"; // Runtime is hard coded for now... waiting for SDK updates or smth.
         public static string FriendlyYYPName = "";
         public static string GameIconPath = Application.StartupPath + "\\default_icon.jpg";
-        public static string RNXVersionString = "1.1.0";
+        public static string RNXVersionString = "1.1.1";
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
@@ -308,7 +308,7 @@ namespace RussellNX
             var logodir = @".\build\logo";
             var controldir = @".\build\control";
             var htmldocdir = @".\htmldir";
-            args = @" -k " + KeysBox.Text + @" --keygeneration 9 --titleid " + TitleIDBox.Text + @" --titlename """ + GameNameBox.Text + @""" --titlepublisher """ + AuthorBox.Text + @""" --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --htmldocdir " + htmldocdir + @" --legalinfodir " + htmldocdir + @" ";
+            args = @" -k """ + KeysBox.Text + @""" --keygeneration 6 --titleid " + TitleIDBox.Text + @" --titlename """ + GameNameBox.Text + @""" --titlepublisher """ + AuthorBox.Text + @""" --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --htmldocdir " + htmldocdir + @" --legalinfodir " + htmldocdir + @" ";
             prnt(args);
             process.StartInfo.Arguments = args;
             process.StartInfo.FileName = Application.StartupPath + "\\hacbrewpack.exe";
