@@ -221,13 +221,6 @@ namespace RussellNX
 
             prnt("BUILD BEGIN:");
 
-            //Make control.xml for control.nacp!
-            prnt("Making control.xml");
-            string TempNewStr = TemplateVar.GlobalTemplateXMLString.Replace("INSERT_TITLE_OF_APP_HERE", GameNameBox.Text);
-            TempNewStr = TempNewStr.Replace("INSERT_DEVELOPER_OF_THE_APP_HERE", AuthorBox.Text);
-            TempNewStr = TempNewStr.Replace("INSERT_VERSION_STRING_HERE", VersionBox.Text);
-            TempNewStr = TempNewStr.Replace("INSERT_TITLEID_OF_THE_APP_HERE", TitleIDBox.Text);
-
             //After this, TempNewStr has all details filled.
             //Name, Author, Version, TitleID
 
@@ -241,11 +234,9 @@ namespace RussellNX
 
             //Put some files...
             prnt("Copying stuff");
-            File.WriteAllText(TempDirectoryPath + "\\control.xml", TempNewStr);
             DirectoryCopy(Application.StartupPath + "\\build", TempDirectoryPath + "\\build", true);
-            DirectoryCopy(Application.StartupPath + "\\htmldir", TempDirectoryPath + "\\htmldir", true);
 
-            prnt("Generating GMAssCompiler args str"); //Ass is intentional, please laugh...
+            prnt("Generating GMAssetCompiler args str"); //Ass is intentional, please laugh...
             string GMACPath = RuntimePath + "\\bin\\GMAssetCompiler.exe";
             string BaseProjPath = RuntimePath + "\\BaseProject\\BaseProject.yyp";
             string GameProjPath = ProjectPathBox.Text;
@@ -263,33 +254,17 @@ namespace RussellNX
             //prnt(GMACArgs);
             //return;
 
-            prnt("\nBuilding control.nacp from control.xml\n"); //one extra newline.
+            string args = "";
 
-            Process process;
+            //Compile game
+            
+            prnt("\nInvoking GMAssetCompiler.exe...\n");
 
-            string args = "-a createnacp -i .\\control.xml -o .\\build\\control\\control.nacp";
-
-            process = new Process();
-
-            //Build control.nacp Metadata file
+            Process process = new Process();
             process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.FileName = Application.StartupPath + "\\hptnacp.exe";
-            process.StartInfo.WorkingDirectory = TempDirectoryPath;
-            process.StartInfo.Arguments = args;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.UseShellExecute = false;
-            process.Start();
-            while (!process.StandardOutput.EndOfStream)
-            {
-                prnt(process.StandardOutput.ReadLine());
-                Application.DoEvents(); //update LogBox richtextbox
-            }
-            process.WaitForExit();
-
-            //Compile game
-            prnt("\nInvoking GMAssetCompiler.exe...\n");
-
             process.StartInfo.WorkingDirectory = RuntimePath + "\\bin";
             process.StartInfo.FileName = GMACPath;
             process.StartInfo.Arguments = GMACArgs;
@@ -301,14 +276,14 @@ namespace RussellNX
             }
             process.WaitForExit();
 
-            prnt("\nBuilding NCA...");
+            prnt("\nBuilding NSP...");
             File.Copy(GameIconPath, TempDirectoryPath + "\\build\\control\\icon_AmericanEnglish.dat"); //copy the icon
             var exefsdir = @".\build\exefs";
             var romfsdir = @".\build\romfs";
             var logodir = @".\build\logo";
             var controldir = @".\build\control";
-            var htmldocdir = @".\htmldir";
-            args = @" -k """ + KeysBox.Text + @""" --keygeneration 6 --titleid " + TitleIDBox.Text + @" --titlename """ + GameNameBox.Text + @""" --titlepublisher """ + AuthorBox.Text + @""" --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --htmldocdir " + htmldocdir + @" --legalinfodir " + htmldocdir + @" ";
+            var htmldocdir = @".\build\htmldir";
+            args = @" -k """ + KeysBox.Text + @""" --keygeneration 6 --titleid " + TitleIDBox.Text + @" --titlename """ + GameNameBox.Text + @""" --titlepublisher """ + AuthorBox.Text + @""" --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --htmldocdir " + htmldocdir + @" --legalinfodir " + htmldocdir + @" --nopatchnacplogo";
             prnt(args);
             process.StartInfo.Arguments = args;
             process.StartInfo.FileName = Application.StartupPath + "\\hacbrewpack.exe";
