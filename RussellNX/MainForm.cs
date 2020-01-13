@@ -335,7 +335,7 @@ namespace RussellNX
             }
             process.WaitForExit();
 
-            GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=False /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @"""";
+            GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @"""";
             process.StartInfo.Arguments = GMACArgs;
             prnt(GMACArgs);
 
