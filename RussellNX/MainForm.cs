@@ -10,20 +10,23 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using System.Diagnostics;
+using System.Security.Cryptography; //MD5
 
 //INI library
 using IniParser;
 using IniParser.Model;
 using IniParser.Parser;
+using System.Threading;
 
 namespace RussellNX
 {
     public partial class MainForm : Form
     {
-        public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-2.2.3.344"; // Runtime is hard coded for now... waiting for SDK updates or smth.
+        public static string RuntimeVersion = "2.2.3.344";
+        public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
         public static string GameIconPath = Application.StartupPath + "\\default_icon.jpg";
-        public static string RNXVersionString = "1.1.1";
+        public static string RNXVersionString = "1.2.0";
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
@@ -64,16 +67,15 @@ namespace RussellNX
                 return;
             }
 
-            Bitmap __icon = new Bitmap(GameIconPath);
-            IconPicBox.Image = __icon;
+            IconPicBox.Image = new Bitmap(GameIconPath);
 
             //Check for 2.2.3.344 Runtime
             //other runtimes maybe later idk...
             if (!File.Exists(RuntimePath + "\\bin\\GMAssetCompiler.exe"))
             {
-                MessageBox.Show("ERROR!\nGMS2 Runtime 2.2.3.344 is not installed!\nPlease Open GMS2 then go to File->Preferences->Runtime Feeds->Master\nAnd download 2.2.3.344 runtime, then restart this tool.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(-1); //-1 because an error has occured.
-                return;
+                MessageBox.Show("ERROR!\nThe version of runtime you chose is not installed! Please make sure to download it in GMS2 in File->Preferences->Runtime Feeds->Master (the tool uses 2.2.3.344 as default)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //Environment.Exit(-1); //-1 because an error has occured.
+                //return;
             }
 
             MessageBox.Show("WARNING:\n1) This tool is highly experimental!\n2) Installing Custom NSPs may get your Switch banned, be careful!", "Important Warning.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -205,24 +207,67 @@ namespace RussellNX
                 MessageBox.Show("Project file does not exist!\nPlease select a valid project file.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             if (!File.Exists(GameIconPath))
             {
                 MessageBox.Show("Icon does not exist!\nPlease select your icon again.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             if (!File.Exists(KeysBox.Text))
             {
                 MessageBox.Show("keys.txt does not exist!\nPlease select your keys.txt file again.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
+            if (!File.Exists(RuntimePath + "\\bin\\GMAssetCompiler.exe"))
+            {
+                MessageBox.Show("This path is invalid, maybe your runtime version is invalid?", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //Check for PwnieCastle.Crypto.dll
+            if (RuntimeVersion != "2.2.3.344") //this version has public_key vuln, newer don't.
+            {
+                string hash = "";
+                using (var md5 = MD5.Create())
+                {
+                    using (var stream = File.OpenRead(RuntimePath + "\\bin\\BouncyCastle.Crypto.dll"))
+                    {
+                        hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToUpperInvariant();
+                        stream.Close();
+                        stream.Dispose();
+                    }
+                }
+                prnt("hash of BouncyCastle.Crypto.dll: " + hash);
+                if (hash != "2DF050A077C999DC0BBF21EB7E7DFA70") //hash of PwnieCastle.Crypto.Dll
+                {
+                    DialogResult result = MessageBox.Show("Hey, your runtime is not vulnerable to public_key\nAnd it doesn't have PwnieCastle installed, would you like to copy over PwnieCastle.Crypto.dll from RussellNX directory to bypass /m=switch license check?", "PwnieCastle Message", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.No)
+                    {
+                        prnt("User aborted installation of PwnieCastle.Crypto.dll, cannot proceed!");
+                        return;
+                    }
+                    else if (result == DialogResult.Yes)
+                    {
+                        if (!File.Exists(Application.StartupPath + "\\PwnieCastle.Crypto.dll"))
+                        {
+                            prnt("ERROR! PwnieCastle library doesn't exist, redownload RussellNX! Building aborted!");
+                            return;
+                        }
+                        prnt("Installing PwnieCastle.Crypto.dll...");
+                        File.Copy(RuntimePath + @"\bin\BouncyCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.bak");
+                        File.Copy(Application.StartupPath + @"\PwnieCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.dll", true);
+                        prnt("Done! Backup is saved in {RuntimeDir}\\bin\\BouncyCastle.Crypto.dll");
+                    }
+                    else prnt("?????????? try again, please.");
+                }
+            }
+
             //Let the build begin >:)
             prnt("$LOG_CLEAN"); //clean LogBox
 
             prnt("BUILD BEGIN:");
-
-            //After this, TempNewStr has all details filled.
-            //Name, Author, Version, TitleID
 
             //Make a temp build directory.
             prnt("Making Temp Directory");
@@ -246,19 +291,22 @@ namespace RussellNX
             string OutputDir = TempDirectoryPath + "\\build\\romfs";
             string INIDir = TempDirectoryPath + "\\build\\romfs\\options.ini";
 
-            //going to fool fukken yoyo drm soon but not nau
             string LicensePlistPath = Application.StartupPath + "\\license"; //public_key'd already ;)
-            //string LicensePlistPath = @"C:\Users\Nik\AppData\Roaming/GameMakerStudio2\ganopo6048_2260884";
 
-            string GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=False /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @""" ";
-            //prnt(GMACArgs);
+            //shader fix, fuck yoyo
+            Directory.CreateDirectory(TempDir);
+            Directory.CreateDirectory(CacheDir);
+            Directory.CreateDirectory(OutputDir);
+
+            string GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=False /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @""" /preprocess=""" + CacheDir + @"""";
+            prnt(GMACArgs);
             //return;
 
             string args = "";
 
             //Compile game
             
-            prnt("\nInvoking GMAssetCompiler.exe...\n");
+            prnt("\nPreprocessing game project...\n");
 
             Process process = new Process();
             process.StartInfo.CreateNoWindow = true;
@@ -276,14 +324,27 @@ namespace RussellNX
             }
             process.WaitForExit();
 
+            GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=False /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @"""";
+            process.StartInfo.Arguments = GMACArgs;
+            prnt(GMACArgs);
+
+            prnt("\nBuilding your project...\n");
+            process.Start();
+            while (!process.StandardOutput.EndOfStream)
+            {
+                prnt(process.StandardOutput.ReadLine());
+                Application.DoEvents(); //update LogBox richtextbox
+            }
+            process.WaitForExit();
+
             prnt("\nBuilding NSP...");
             File.Copy(GameIconPath, TempDirectoryPath + "\\build\\control\\icon_AmericanEnglish.dat"); //copy the icon
+            File.Copy(GameIconPath, TempDirectoryPath + "\\build\\control\\icon_Japanese.dat"); //...twice
             var exefsdir = @".\build\exefs";
             var romfsdir = @".\build\romfs";
             var logodir = @".\build\logo";
             var controldir = @".\build\control";
-            var htmldocdir = @".\build\htmldir";
-            args = @" -k """ + KeysBox.Text + @""" --keygeneration 6 --titleid " + TitleIDBox.Text + @" --titlename """ + GameNameBox.Text + @""" --titlepublisher """ + AuthorBox.Text + @""" --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --htmldocdir " + htmldocdir + @" --legalinfodir " + htmldocdir + @" --nopatchnacplogo";
+            args = @" -k """ + KeysBox.Text + @""" --keygeneration 6 --titleid " + TitleIDBox.Text + @" --titlename """ + GameNameBox.Text + @""" --titlepublisher """ + AuthorBox.Text + @""" --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo";
             prnt(args);
             process.StartInfo.Arguments = args;
             process.StartInfo.FileName = Application.StartupPath + "\\hacbrewpack.exe";
@@ -331,6 +392,9 @@ namespace RussellNX
             VersionBox.Text = data["Main"]["AppVersion"];
             KeysBox.Text = data["Main"]["AppKeysPath"];
             GameIconPath = data["Main"]["AppIconPath"];
+            RuntimeVersion = data["Main"]["RuntimeVersion"];
+            RuntimeVersionBox.Text = RuntimeVersion;
+            RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         }
         private void SaveSettings()
         {
@@ -343,6 +407,7 @@ namespace RussellNX
             data["Main"]["AppVersion"] = VersionBox.Text;
             data["Main"]["AppKeysPath"] = KeysBox.Text;
             data["Main"]["AppIconPath"] = GameIconPath;
+            data["Main"]["RuntimeVersion"] = RuntimeVersion;
             data["AppVersion"]["RNXVer"] = RNXVersionString;
             parser.WriteFile(Application.StartupPath + "\\RussellNX.ini", data);
         }
@@ -374,6 +439,11 @@ namespace RussellNX
             prnt("Saving...");
             SaveSettings();
 
+        }
+
+        private void RuntimeVersionBox_TextChanged(object sender, EventArgs e)
+        {
+            RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         }
     }
 }

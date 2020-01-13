@@ -49,6 +49,8 @@
             this.LogBox = new System.Windows.Forms.RichTextBox();
             this.LogTitle = new System.Windows.Forms.Label();
             this.IconPicBox = new System.Windows.Forms.PictureBox();
+            this.RuntimeLabelBox = new System.Windows.Forms.Label();
+            this.RuntimeVersionBox = new System.Windows.Forms.MaskedTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.IconPicBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -259,11 +261,32 @@
             this.IconPicBox.TabIndex = 12;
             this.IconPicBox.TabStop = false;
             // 
+            // RuntimeLabelBox
+            // 
+            this.RuntimeLabelBox.AutoSize = true;
+            this.RuntimeLabelBox.Location = new System.Drawing.Point(417, 60);
+            this.RuntimeLabelBox.Name = "RuntimeLabelBox";
+            this.RuntimeLabelBox.Size = new System.Drawing.Size(86, 13);
+            this.RuntimeLabelBox.TabIndex = 23;
+            this.RuntimeLabelBox.Text = "Runtime version:";
+            // 
+            // RuntimeVersionBox
+            // 
+            this.RuntimeVersionBox.Location = new System.Drawing.Point(420, 79);
+            this.RuntimeVersionBox.Mask = "0.0.0.000";
+            this.RuntimeVersionBox.Name = "RuntimeVersionBox";
+            this.RuntimeVersionBox.Size = new System.Drawing.Size(83, 20);
+            this.RuntimeVersionBox.TabIndex = 25;
+            this.RuntimeVersionBox.Text = "223344";
+            this.RuntimeVersionBox.TextChanged += new System.EventHandler(this.RuntimeVersionBox_TextChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1140, 684);
+            this.Controls.Add(this.RuntimeVersionBox);
+            this.Controls.Add(this.RuntimeLabelBox);
             this.Controls.Add(this.LogTitle);
             this.Controls.Add(this.LogBox);
             this.Controls.Add(this.RNXVersionLabel);
@@ -317,6 +340,8 @@
         private System.Windows.Forms.Label RNXVersionLabel;
         private System.Windows.Forms.RichTextBox LogBox;
         private System.Windows.Forms.Label LogTitle;
+        private System.Windows.Forms.Label RuntimeLabelBox;
+        private System.Windows.Forms.MaskedTextBox RuntimeVersionBox;
     }
 }
 
