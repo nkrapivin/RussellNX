@@ -26,7 +26,7 @@ namespace RussellNX
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
         public static string GameIconPath = Application.StartupPath + "\\default_icon.jpg";
-        public static string RNXVersionString = "1.2.0";
+        public static string RNXVersionString = "1.2.1";
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
@@ -99,6 +99,8 @@ namespace RussellNX
                     KeysBox.Text = KeysChooseDialog.FileName;
                 }
             }
+
+            prnt("RussellNX Version " + RNXVersionString + " is waiting for you, master!");
         }
 
         private void IconChooseBtn_Click(object sender, EventArgs e)
@@ -135,7 +137,8 @@ namespace RussellNX
             if (ProjectChooseDialog.ShowDialog() == DialogResult.OK)
             {
                 ProjectPathBox.Text = ProjectChooseDialog.FileName;
-                FriendlyYYPName = ProjectChooseDialog.SafeFileName.Replace(".yyp", "");
+                FriendlyYYPName = Path.GetFileNameWithoutExtension(ProjectChooseDialog.FileName);
+                prnt("GameName: " + FriendlyYYPName);
                 //MessageBox.Show(FriendlyYYPName);
             }
         }
@@ -226,6 +229,14 @@ namespace RussellNX
                 return;
             }
 
+            string prebuiltPath = "";
+            if (!Directory.Exists(Application.StartupPath + @"\runners\build" + RuntimeVersion))
+            {
+                MessageBox.Show("ERROR! Nik didn't built an ExeFS for your runtime version,\ncould you please try a different one?\n\n(or contact nik at nik#5351 and tell him the version you want)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else prebuiltPath = Application.StartupPath + @"\runners\build" + RuntimeVersion;
+
             //Check for PwnieCastle.Crypto.dll
             if (RuntimeVersion != "2.2.3.344") //this version has public_key vuln, newer don't.
             {
@@ -279,7 +290,7 @@ namespace RussellNX
 
             //Put some files...
             prnt("Copying stuff");
-            DirectoryCopy(Application.StartupPath + "\\build", TempDirectoryPath + "\\build", true);
+            DirectoryCopy(prebuiltPath, TempDirectoryPath + "\\build", true);
 
             prnt("Generating GMAssetCompiler args str"); //Ass is intentional, please laugh...
             string GMACPath = RuntimePath + "\\bin\\GMAssetCompiler.exe";
@@ -395,6 +406,10 @@ namespace RussellNX
             RuntimeVersion = data["Main"]["RuntimeVersion"];
             RuntimeVersionBox.Text = RuntimeVersion;
             RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
+            FriendlyYYPName = Path.GetFileNameWithoutExtension(ProjectPathBox.Text);
+            prnt("GameName: " + FriendlyYYPName);
+            prnt("RuntimePath: " + RuntimePath);
+            prnt("Loaded!");
         }
         private void SaveSettings()
         {
@@ -410,6 +425,7 @@ namespace RussellNX
             data["Main"]["RuntimeVersion"] = RuntimeVersion;
             data["AppVersion"]["RNXVer"] = RNXVersionString;
             parser.WriteFile(Application.StartupPath + "\\RussellNX.ini", data);
+            prnt("Saved!");
         }
         private void DefaultSettings()
         {
@@ -443,7 +459,8 @@ namespace RussellNX
 
         private void RuntimeVersionBox_TextChanged(object sender, EventArgs e)
         {
-            RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
+            RuntimeVersion = RuntimeVersionBox.Text;
+            RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersionBox;
         }
     }
 }
