@@ -55,16 +55,22 @@ namespace RussellNX
                 string[] RNXVersion = RNXVersionString.Split(".".ToCharArray());
                 File.Delete(AppDomain.CurrentDomain.BaseDirectory + "latest");
                 //MessageBox.Show(RNXVersion[1]);
-                if ((int.Parse(LatestVersion[0]) < int.Parse(RNXVersion[0])) || (int.Parse(LatestVersion[1]) < int.Parse(RNXVersion[1])) || (int.Parse(LatestVersion[2]) < int.Parse(RNXVersion[2])))
+                if (int.Parse(LatestVersion[2]) > int.Parse(RNXVersion[2]))
                 {
-                    DialogResult dialog = MessageBox.Show("A RussellNX update is released!\nYour Version: " + RNXVersionString + "\nNew Version: " + verstring + "\nWould you like to update?\n\nChangelog can be found on GitHub.", "RussellNX: Auto Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                    if (dialog == DialogResult.Yes)
+                    if (int.Parse(LatestVersion[1]) > int.Parse(RNXVersion[1]))
                     {
-                        Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/updater.exe", AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
-                        Process.Start(AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
-                        Client.Dispose();
-                        Environment.Exit(0);
-                        return;
+                        if (int.Parse(LatestVersion[0]) > int.Parse(RNXVersion[0]))
+                        {
+                            DialogResult dialog = MessageBox.Show("A RussellNX update is released!\nYour Version: " + RNXVersionString + "\nNew Version: " + verstring + "\nWould you like to update?\n\nChangelog can be found on GitHub.", "RussellNX: Auto Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                            if (dialog == DialogResult.Yes)
+                            {
+                                Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/updater.exe", AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
+                                Process.Start(AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
+                                Client.Dispose();
+                                Environment.Exit(0);
+                                return;
+                            }
+                        }
                     }
                 }
             }
