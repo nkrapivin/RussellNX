@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Xml;
 using System.Diagnostics;
 using System.Security.Cryptography; //MD5
+using System.Net;
 
 //INI library
 using IniParser;
 using IniParser.Model;
-using IniParser.Parser;
-using System.Threading;
+using System.Xml.Linq;
+using System.Collections.Generic;
 
 namespace RussellNX
 {
@@ -25,8 +19,8 @@ namespace RussellNX
         public static string RuntimeVersion = "2.2.3.344";
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
-        public static string GameIconPath = Application.StartupPath + "\\default_icon.jpg";
-        public static string RNXVersionString = "1.2.1";
+        public static string GameIconPath = AppDomain.CurrentDomain.BaseDirectory + "default_icon.jpg";
+        public static string RNXVersionString = "1.3.0";
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
@@ -37,7 +31,7 @@ namespace RussellNX
             //Check for write access first.
             try
             {
-                File.WriteAllText(Application.StartupPath + "\\dircheck.txt", "");
+                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "dircheck.txt", "");
             }
             catch (Exception e)
             {
@@ -46,12 +40,38 @@ namespace RussellNX
                 Environment.Exit(-1);
                 return;
             }
-            File.Delete(Application.StartupPath + "\\dircheck.txt");
+            File.Delete(AppDomain.CurrentDomain.BaseDirectory + "dircheck.txt");
             //I mean, if this check passed, this file should exist, if check failed, program exits before this line executes.
+
+            //Update check... (updater is not yet ready)
+            WebClient Client = new WebClient();
+            bool allFine = true;
+            try { Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/version", AppDomain.CurrentDomain.BaseDirectory + "latest"); }
+            catch { allFine = false; }
+            if (allFine)
+            {
+                string verstring = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "latest");
+                string[] LatestVersion = verstring.Split(".".ToCharArray());
+                string[] RNXVersion = RNXVersionString.Split(".".ToCharArray());
+                File.Delete(AppDomain.CurrentDomain.BaseDirectory + "latest");
+                //MessageBox.Show(RNXVersion[1]);
+                if ((int.Parse(LatestVersion[0]) < int.Parse(RNXVersion[0])) || (int.Parse(LatestVersion[1]) < int.Parse(RNXVersion[1])) || (int.Parse(LatestVersion[2]) < int.Parse(RNXVersion[2])))
+                {
+                    DialogResult dialog = MessageBox.Show("A RussellNX update is released!\nYour Version: " + RNXVersionString + "\nNew Version: " + verstring + "\nWould you like to update?\n\nChangelog can be found on GitHub.", "RussellNX: Auto Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (dialog == DialogResult.Yes)
+                    {
+                        Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/updater.exe", AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
+                        Process.Start(AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
+                        Client.Dispose();
+                        Environment.Exit(0);
+                        return;
+                    }
+                }
+            }
 
             if (Debugger.IsAttached) Text += " (Running inside Visual Studio)";
 
-            if (!File.Exists(Application.StartupPath + "\\RussellNX.ini"))
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini"))
             {
                 DefaultSettings();
             }
@@ -83,8 +103,8 @@ namespace RussellNX
             //Cleanup temp dirs
             for (int i = 1000; i < 9999; i++)
             {
-                if (Directory.Exists(Application.StartupPath + "\\TEMPDIR" + i.ToString()))
-                    Directory.Delete(Application.StartupPath + "\\TEMPDIR" + i.ToString(), true);
+                if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + i.ToString()))
+                    Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + i.ToString(), true);
             }
 
             //Check for keys.txt here
@@ -230,12 +250,12 @@ namespace RussellNX
             }
 
             string prebuiltPath = "";
-            if (!Directory.Exists(Application.StartupPath + @"\runners\build" + RuntimeVersion))
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + @"runners\build" + RuntimeVersion))
             {
                 MessageBox.Show("ERROR! Nik didn't built an ExeFS for your runtime version,\ncould you please try a different one?\n\n(or contact nik at nik#5351 and tell him the version you want)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else prebuiltPath = Application.StartupPath + @"\runners\build" + RuntimeVersion;
+            else prebuiltPath = AppDomain.CurrentDomain.BaseDirectory + @"runners\build" + RuntimeVersion;
 
             //Check for PwnieCastle.Crypto.dll
             if (RuntimeVersion != "2.2.3.344") //this version has public_key vuln, newer don't.
@@ -251,7 +271,7 @@ namespace RussellNX
                     }
                 }
                 prnt("hash of BouncyCastle.Crypto.dll: " + hash);
-                if (hash != "2DF050A077C999DC0BBF21EB7E7DFA70") //hash of PwnieCastle.Crypto.Dll
+                if (hash != "D33FB0C43C654BC3F33BCC71F79CBE14") //hash of (new) PwnieCastle.Crypto.Dll
                 {
                     DialogResult result = MessageBox.Show("Hey, your runtime is not vulnerable to public_key\nAnd it doesn't have PwnieCastle installed, would you like to copy over PwnieCastle.Crypto.dll from RussellNX directory to bypass /m=switch license check?", "PwnieCastle Message", MessageBoxButtons.YesNo);
                     if (result == DialogResult.No)
@@ -261,14 +281,14 @@ namespace RussellNX
                     }
                     else if (result == DialogResult.Yes)
                     {
-                        if (!File.Exists(Application.StartupPath + "\\PwnieCastle.Crypto.dll"))
+                        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "PwnieCastle.Crypto.dll"))
                         {
                             prnt("ERROR! PwnieCastle library doesn't exist, redownload RussellNX! Building aborted!");
                             return;
                         }
                         prnt("Installing PwnieCastle.Crypto.dll...");
                         File.Copy(RuntimePath + @"\bin\BouncyCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.bak");
-                        File.Copy(Application.StartupPath + @"\PwnieCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.dll", true);
+                        File.Copy(AppDomain.CurrentDomain.BaseDirectory + @"PwnieCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.dll", true);
                         prnt("Done! Backup is saved in {RuntimeDir}\\bin\\BouncyCastle.Crypto.dll");
                     }
                     else prnt("?????????? try again, please.");
@@ -284,15 +304,25 @@ namespace RussellNX
             prnt("Making Temp Directory");
             Random ind = new Random();
             int ind2 = ind.Next(1000, 9999);
-            string TempDirectoryPath = Application.StartupPath + "\\TEMPDIR" + ind2.ToString();
+            string TempDirectoryPath = AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + ind2.ToString();
             if (Directory.Exists(TempDirectoryPath)) Directory.Delete(TempDirectoryPath);
             Directory.CreateDirectory(TempDirectoryPath);
 
             //Put some files...
             prnt("Copying stuff");
             DirectoryCopy(prebuiltPath, TempDirectoryPath + "\\build", true);
+            prnt("Copying your icon as multiple for each language... :p");
+            string iconsDir = TempDirectoryPath + "\\build\\control\\";
+            CopyLang(aengCheckbox, iconsDir); //always enabled...
+            CopyLang(freCheckbox, iconsDir);
+            CopyLang(spaCheckbox, iconsDir);
+            CopyLang(itaCheckbox, iconsDir);
+            CopyLang(rusCheckbox, iconsDir);
+            CopyLang(dutCheckbox, iconsDir);
+            CopyLang(porCheckbox, iconsDir);
+            CopyLang(gerCheckbox, iconsDir);
 
-            prnt("Generating GMAssetCompiler args str"); //Ass is intentional, please laugh...
+            prnt("Generating GMAssetCompiler args str");
             string GMACPath = RuntimePath + "\\bin\\GMAssetCompiler.exe";
             string BaseProjPath = RuntimePath + "\\BaseProject\\BaseProject.yyp";
             string GameProjPath = ProjectPathBox.Text;
@@ -302,7 +332,7 @@ namespace RussellNX
             string OutputDir = TempDirectoryPath + "\\build\\romfs";
             string INIDir = TempDirectoryPath + "\\build\\romfs\\options.ini";
 
-            string LicensePlistPath = Application.StartupPath + "\\license"; //public_key'd already ;)
+            string LicensePlistPath = AppDomain.CurrentDomain.BaseDirectory + "license"; //public_key'd already ;)
 
             //shader fix, fuck yoyo
             Directory.CreateDirectory(TempDir);
@@ -348,17 +378,64 @@ namespace RussellNX
             }
             process.WaitForExit();
 
+            prnt("\nGenerating control.nacp...");
+            XDocument xml = XDocument.Load(AppDomain.CurrentDomain.BaseDirectory + "runners\\dummy.xml");
+            List<string> EnabledLangs = new List<string>();
+            if (aengCheckbox.Enabled) EnabledLangs.Add(aengCheckbox.Text);
+            if (freCheckbox.Enabled) EnabledLangs.Add(freCheckbox.Text);
+            if (spaCheckbox.Enabled) EnabledLangs.Add(spaCheckbox.Text);
+            if (itaCheckbox.Enabled) EnabledLangs.Add(itaCheckbox.Text);
+            if (rusCheckbox.Enabled) EnabledLangs.Add(rusCheckbox.Text);
+            if (dutCheckbox.Enabled) EnabledLangs.Add(dutCheckbox.Text);
+            if (porCheckbox.Enabled) EnabledLangs.Add(porCheckbox.Text);
+            if (gerCheckbox.Enabled) EnabledLangs.Add(gerCheckbox.Text);
+
+            foreach (string lang in EnabledLangs)
+            {
+                xml.Element("Application").Add(new XElement("SupportedLanguage", lang));
+                xml.Element("Application").Add(new XElement("Title", new XElement("Language", lang), new XElement("Name", GameNameBox.Text), new XElement("Publisher", AuthorBox.Text)));
+            }
+            xml.Element("Application").Element("DisplayVersion").Value = VersionBox.Text;
+            xml.Element("Application").Element("DataLossConfirmation").Value = DataLossCheckbox.Enabled ? "Required" : "None";
+            xml.Element("Application").Element("StartupUserAccount").Value = StartupAccCheckbox.Enabled ? "Required" : "None";
+
+            //titleid stuff
+            xml.Element("Application").Element("SaveDataOwnerId").Value = "0x" + TitleIDBox.Text.ToLower();
+            xml.Element("Application").Element("PresenceGroupId").Value = "0x" + TitleIDBox.Text.ToLower();
+            xml.Element("Application").Element("AddOnContentBaseId").Value = "0x" + TitleIDBox.Text.ToLower();
+            xml.Element("Application").Element("LocalCommunicationId").Value = "0x" + TitleIDBox.Text.ToLower();
+            xml.Element("Application").Element("SeedForPseudoDeviceId").Value = "0x" + TitleIDBox.Text.ToLower();
+
+            xml.Save(TempDirectoryPath + "\\temp.xml");
+
+            process.StartInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "hptnacp.exe";
+            process.StartInfo.WorkingDirectory = TempDirectoryPath;
+            process.StartInfo.Arguments = @"-a createnacp -i temp.xml -o .\build\control\control.nacp";
+            process.Start();
+            while (!process.StandardOutput.EndOfStream)
+            {
+                prnt(process.StandardOutput.ReadLine());
+                Application.DoEvents(); //update LogBox richtextbox
+            }
+            process.WaitForExit();
+
+            prnt("Patching main.npdm...");
+            string npdmPath = TempDirectoryPath + "\\build\\exefs\\main.npdm";
+            byte[] npdmData = File.ReadAllBytes(npdmPath);
+            //TODO!!
+
+            //MessageBox.Show("break on me");
+
             prnt("\nBuilding NSP...");
-            File.Copy(GameIconPath, TempDirectoryPath + "\\build\\control\\icon_AmericanEnglish.dat"); //copy the icon
-            File.Copy(GameIconPath, TempDirectoryPath + "\\build\\control\\icon_Japanese.dat"); //...twice
+
             var exefsdir = @".\build\exefs";
             var romfsdir = @".\build\romfs";
             var logodir = @".\build\logo";
             var controldir = @".\build\control";
-            args = @" -k """ + KeysBox.Text + @""" --keygeneration 6 --titleid " + TitleIDBox.Text + @" --titlename """ + GameNameBox.Text + @""" --titlepublisher """ + AuthorBox.Text + @""" --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo";
+            args = @" -k """ + KeysBox.Text + @""" --keygeneration 6 --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo";
             prnt(args);
             process.StartInfo.Arguments = args;
-            process.StartInfo.FileName = Application.StartupPath + "\\hacbrewpack.exe";
+            process.StartInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "hacbrewpack.exe";
             process.StartInfo.WorkingDirectory = TempDirectoryPath;
             process.Start();
             while (!process.StandardOutput.EndOfStream)
@@ -395,7 +472,7 @@ namespace RussellNX
         private void LoadSettings()
         {
             var parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(Application.StartupPath + "\\RussellNX.ini");
+            IniData data = parser.ReadFile(AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini");
             ProjectPathBox.Text = data["Main"]["AppYYPPath"];
             TitleIDBox.Text = data["Main"]["AppID"];
             GameNameBox.Text = data["Main"]["AppName"];
@@ -414,7 +491,7 @@ namespace RussellNX
         private void SaveSettings()
         {
             var parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(Application.StartupPath + "\\RussellNX.ini");
+            IniData data = parser.ReadFile(AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini");
             data["Main"]["AppYYPPath"] = ProjectPathBox.Text;
             data["Main"]["AppID"] = TitleIDBox.Text;
             data["Main"]["AppName"] = GameNameBox.Text;
@@ -424,21 +501,21 @@ namespace RussellNX
             data["Main"]["AppIconPath"] = GameIconPath;
             data["Main"]["RuntimeVersion"] = RuntimeVersion;
             data["AppVersion"]["RNXVer"] = RNXVersionString;
-            parser.WriteFile(Application.StartupPath + "\\RussellNX.ini", data);
+            parser.WriteFile(AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini", data);
             prnt("Saved!");
         }
         private void DefaultSettings()
         {
             //Migrate KeysFilePath 1.0 config
-            if (File.Exists(Application.StartupPath+"\\KeysFilePath"))
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "KeysFilePath"))
             {
-                string kpath = File.ReadAllText(Application.StartupPath + "\\KeysFilePath");
+                string kpath = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "KeysFilePath");
                 KeysBox.Text = kpath;
-                File.Delete(Application.StartupPath + "\\KeysFilePath");
+                File.Delete(AppDomain.CurrentDomain.BaseDirectory + "KeysFilePath");
             }
 
             //Populate default settings file.
-            string fname = Application.StartupPath + "\\RussellNX.ini";
+            string fname = AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini";
             File.WriteAllText(fname, "");
             var parser = new FileIniDataParser();
             IniData data = parser.ReadFile(fname);
@@ -461,6 +538,16 @@ namespace RussellNX
         {
             RuntimeVersion = RuntimeVersionBox.Text;
             RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersionBox;
+        }
+
+        public void CopyLang(CheckBox c, string dir)
+        {
+            string langName = c.Text;
+            if (c.Enabled)
+            {
+                prnt("Copying " + GameIconPath + " to " + dir + " ...");
+                File.Copy(GameIconPath, dir + "icon_" + langName + ".dat");
+            }
         }
     }
 }

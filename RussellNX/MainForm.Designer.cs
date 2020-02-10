@@ -51,6 +51,18 @@
             this.IconPicBox = new System.Windows.Forms.PictureBox();
             this.RuntimeLabelBox = new System.Windows.Forms.Label();
             this.RuntimeVersionBox = new System.Windows.Forms.MaskedTextBox();
+            this.AdvancedOptionsLabel = new System.Windows.Forms.Label();
+            this.StartupAccCheckbox = new System.Windows.Forms.CheckBox();
+            this.DataLossCheckbox = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.aengCheckbox = new System.Windows.Forms.CheckBox();
+            this.freCheckbox = new System.Windows.Forms.CheckBox();
+            this.spaCheckbox = new System.Windows.Forms.CheckBox();
+            this.itaCheckbox = new System.Windows.Forms.CheckBox();
+            this.rusCheckbox = new System.Windows.Forms.CheckBox();
+            this.dutCheckbox = new System.Windows.Forms.CheckBox();
+            this.porCheckbox = new System.Windows.Forms.CheckBox();
+            this.gerCheckbox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.IconPicBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -107,6 +119,7 @@
             // 
             this.GameNameBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.GameNameBox.Location = new System.Drawing.Point(700, 164);
+            this.GameNameBox.MaxLength = 126;
             this.GameNameBox.Name = "GameNameBox";
             this.GameNameBox.Size = new System.Drawing.Size(428, 20);
             this.GameNameBox.TabIndex = 5;
@@ -126,6 +139,7 @@
             // 
             this.AuthorBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.AuthorBox.Location = new System.Drawing.Point(700, 208);
+            this.AuthorBox.MaxLength = 62;
             this.AuthorBox.Name = "AuthorBox";
             this.AuthorBox.Size = new System.Drawing.Size(428, 20);
             this.AuthorBox.TabIndex = 7;
@@ -198,9 +212,9 @@
             this.KeysLabel.AutoSize = true;
             this.KeysLabel.Location = new System.Drawing.Point(700, 278);
             this.KeysLabel.Name = "KeysLabel";
-            this.KeysLabel.Size = new System.Drawing.Size(62, 13);
+            this.KeysLabel.Size = new System.Drawing.Size(167, 13);
             this.KeysLabel.TabIndex = 17;
-            this.KeysLabel.Text = "keys.txt file:";
+            this.KeysLabel.Text = "Keys file (keys.txt, prod.keys, etc):";
             // 
             // KeysBox
             // 
@@ -280,11 +294,144 @@
             this.RuntimeVersionBox.Text = "223344";
             this.RuntimeVersionBox.TextChanged += new System.EventHandler(this.RuntimeVersionBox_TextChanged);
             // 
+            // AdvancedOptionsLabel
+            // 
+            this.AdvancedOptionsLabel.AutoSize = true;
+            this.AdvancedOptionsLabel.Location = new System.Drawing.Point(417, 102);
+            this.AdvancedOptionsLabel.Name = "AdvancedOptionsLabel";
+            this.AdvancedOptionsLabel.Size = new System.Drawing.Size(96, 13);
+            this.AdvancedOptionsLabel.TabIndex = 26;
+            this.AdvancedOptionsLabel.Text = "Advanced options:";
+            // 
+            // StartupAccCheckbox
+            // 
+            this.StartupAccCheckbox.AutoSize = true;
+            this.StartupAccCheckbox.Location = new System.Drawing.Point(420, 118);
+            this.StartupAccCheckbox.Name = "StartupAccCheckbox";
+            this.StartupAccCheckbox.Size = new System.Drawing.Size(161, 17);
+            this.StartupAccCheckbox.TabIndex = 27;
+            this.StartupAccCheckbox.Text = "Require account on startup?";
+            this.StartupAccCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // DataLossCheckbox
+            // 
+            this.DataLossCheckbox.AutoSize = true;
+            this.DataLossCheckbox.Location = new System.Drawing.Point(420, 141);
+            this.DataLossCheckbox.Name = "DataLossCheckbox";
+            this.DataLossCheckbox.Size = new System.Drawing.Size(234, 17);
+            this.DataLossCheckbox.TabIndex = 28;
+            this.DataLossCheckbox.Text = "Show Data Loss dialog when exiting Game?";
+            this.DataLossCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(417, 161);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(115, 13);
+            this.label1.TabIndex = 29;
+            this.label1.Text = "Supported Languages:";
+            // 
+            // aengCheckbox
+            // 
+            this.aengCheckbox.AutoSize = true;
+            this.aengCheckbox.Checked = true;
+            this.aengCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.aengCheckbox.Enabled = false;
+            this.aengCheckbox.Location = new System.Drawing.Point(420, 177);
+            this.aengCheckbox.Name = "aengCheckbox";
+            this.aengCheckbox.Size = new System.Drawing.Size(104, 17);
+            this.aengCheckbox.TabIndex = 30;
+            this.aengCheckbox.Text = "AmericanEnglish";
+            this.aengCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // freCheckbox
+            // 
+            this.freCheckbox.AutoSize = true;
+            this.freCheckbox.Location = new System.Drawing.Point(420, 200);
+            this.freCheckbox.Name = "freCheckbox";
+            this.freCheckbox.Size = new System.Drawing.Size(59, 17);
+            this.freCheckbox.TabIndex = 31;
+            this.freCheckbox.Text = "French";
+            this.freCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // spaCheckbox
+            // 
+            this.spaCheckbox.AutoSize = true;
+            this.spaCheckbox.Location = new System.Drawing.Point(420, 223);
+            this.spaCheckbox.Name = "spaCheckbox";
+            this.spaCheckbox.Size = new System.Drawing.Size(64, 17);
+            this.spaCheckbox.TabIndex = 32;
+            this.spaCheckbox.Text = "Spanish";
+            this.spaCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // itaCheckbox
+            // 
+            this.itaCheckbox.AutoSize = true;
+            this.itaCheckbox.Location = new System.Drawing.Point(420, 246);
+            this.itaCheckbox.Name = "itaCheckbox";
+            this.itaCheckbox.Size = new System.Drawing.Size(54, 17);
+            this.itaCheckbox.TabIndex = 33;
+            this.itaCheckbox.Text = "Italian";
+            this.itaCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // rusCheckbox
+            // 
+            this.rusCheckbox.AutoSize = true;
+            this.rusCheckbox.Location = new System.Drawing.Point(420, 269);
+            this.rusCheckbox.Name = "rusCheckbox";
+            this.rusCheckbox.Size = new System.Drawing.Size(64, 17);
+            this.rusCheckbox.TabIndex = 34;
+            this.rusCheckbox.Text = "Russian";
+            this.rusCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // dutCheckbox
+            // 
+            this.dutCheckbox.AutoSize = true;
+            this.dutCheckbox.Location = new System.Drawing.Point(420, 292);
+            this.dutCheckbox.Name = "dutCheckbox";
+            this.dutCheckbox.Size = new System.Drawing.Size(55, 17);
+            this.dutCheckbox.TabIndex = 35;
+            this.dutCheckbox.Text = "Dutch";
+            this.dutCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // porCheckbox
+            // 
+            this.porCheckbox.AutoSize = true;
+            this.porCheckbox.Location = new System.Drawing.Point(420, 315);
+            this.porCheckbox.Name = "porCheckbox";
+            this.porCheckbox.Size = new System.Drawing.Size(80, 17);
+            this.porCheckbox.TabIndex = 36;
+            this.porCheckbox.Text = "Portuguese";
+            this.porCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // gerCheckbox
+            // 
+            this.gerCheckbox.AutoSize = true;
+            this.gerCheckbox.Location = new System.Drawing.Point(420, 339);
+            this.gerCheckbox.Name = "gerCheckbox";
+            this.gerCheckbox.Size = new System.Drawing.Size(63, 17);
+            this.gerCheckbox.TabIndex = 37;
+            this.gerCheckbox.Text = "German";
+            this.gerCheckbox.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1140, 684);
+            this.Controls.Add(this.gerCheckbox);
+            this.Controls.Add(this.porCheckbox);
+            this.Controls.Add(this.dutCheckbox);
+            this.Controls.Add(this.rusCheckbox);
+            this.Controls.Add(this.itaCheckbox);
+            this.Controls.Add(this.spaCheckbox);
+            this.Controls.Add(this.freCheckbox);
+            this.Controls.Add(this.aengCheckbox);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.DataLossCheckbox);
+            this.Controls.Add(this.StartupAccCheckbox);
+            this.Controls.Add(this.AdvancedOptionsLabel);
             this.Controls.Add(this.RuntimeVersionBox);
             this.Controls.Add(this.RuntimeLabelBox);
             this.Controls.Add(this.LogTitle);
@@ -342,6 +489,18 @@
         private System.Windows.Forms.Label LogTitle;
         private System.Windows.Forms.Label RuntimeLabelBox;
         private System.Windows.Forms.MaskedTextBox RuntimeVersionBox;
+        private System.Windows.Forms.Label AdvancedOptionsLabel;
+        private System.Windows.Forms.CheckBox StartupAccCheckbox;
+        private System.Windows.Forms.CheckBox DataLossCheckbox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox aengCheckbox;
+        private System.Windows.Forms.CheckBox freCheckbox;
+        private System.Windows.Forms.CheckBox spaCheckbox;
+        private System.Windows.Forms.CheckBox itaCheckbox;
+        private System.Windows.Forms.CheckBox rusCheckbox;
+        private System.Windows.Forms.CheckBox dutCheckbox;
+        private System.Windows.Forms.CheckBox porCheckbox;
+        private System.Windows.Forms.CheckBox gerCheckbox;
     }
 }
 
