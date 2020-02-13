@@ -43,34 +43,33 @@ namespace RussellNX
             File.Delete(AppDomain.CurrentDomain.BaseDirectory + "dircheck.txt");
             //I mean, if this check passed, this file should exist, if check failed, program exits before this line executes.
 
-            //Update check... (updater is not yet ready)
+            //Update check...
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "updater.exe")) File.Delete(AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
             WebClient Client = new WebClient();
             bool allFine = true;
+            int versionHigher = 0;
+            Version v1, v2;
+            Client.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.BypassCache);
             try { Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/version", AppDomain.CurrentDomain.BaseDirectory + "latest"); }
             catch { allFine = false; }
             if (allFine)
             {
                 string verstring = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "latest");
-                string[] LatestVersion = verstring.Split(".".ToCharArray());
-                string[] RNXVersion = RNXVersionString.Split(".".ToCharArray());
                 File.Delete(AppDomain.CurrentDomain.BaseDirectory + "latest");
                 //MessageBox.Show(RNXVersion[1]);
-                if (int.Parse(LatestVersion[2]) > int.Parse(RNXVersion[2]))
+                v1 = new Version(verstring);
+                v2 = new Version(RNXVersionString);
+                versionHigher = v1.CompareTo(v2);
+                if (versionHigher > 0)
                 {
-                    if (int.Parse(LatestVersion[1]) > int.Parse(RNXVersion[1]))
+                    DialogResult dialog = MessageBox.Show("A RussellNX update is released!\nYour Version: " + RNXVersionString + "\nNew Version: " + verstring + "\nWould you like to update?\n\nChangelog can be found on GitHub.", "RussellNX: Auto Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (dialog == DialogResult.Yes)
                     {
-                        if (int.Parse(LatestVersion[0]) > int.Parse(RNXVersion[0]))
-                        {
-                            DialogResult dialog = MessageBox.Show("A RussellNX update is released!\nYour Version: " + RNXVersionString + "\nNew Version: " + verstring + "\nWould you like to update?\n\nChangelog can be found on GitHub.", "RussellNX: Auto Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                            if (dialog == DialogResult.Yes)
-                            {
-                                Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/updater.exe", AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
-                                Process.Start(AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
-                                Client.Dispose();
-                                Environment.Exit(0);
-                                return;
-                            }
-                        }
+                        Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/updater.exe", AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
+                        Client.Dispose();
+                        Process.Start(AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
+                        Environment.Exit(0);
+                        return;
                     }
                 }
             }
@@ -301,6 +300,9 @@ namespace RussellNX
                 }
             }
 
+            BuildButton.Enabled = false;
+            SaveSettings();
+
             //Let the build begin >:)
             prnt("$LOG_CLEAN"); //clean LogBox
 
@@ -387,14 +389,14 @@ namespace RussellNX
             prnt("\nGenerating control.nacp...");
             XDocument xml = XDocument.Load(AppDomain.CurrentDomain.BaseDirectory + "runners\\dummy.xml");
             List<string> EnabledLangs = new List<string>();
-            if (aengCheckbox.Enabled) EnabledLangs.Add(aengCheckbox.Text);
-            if (freCheckbox.Enabled) EnabledLangs.Add(freCheckbox.Text);
-            if (spaCheckbox.Enabled) EnabledLangs.Add(spaCheckbox.Text);
-            if (itaCheckbox.Enabled) EnabledLangs.Add(itaCheckbox.Text);
-            if (rusCheckbox.Enabled) EnabledLangs.Add(rusCheckbox.Text);
-            if (dutCheckbox.Enabled) EnabledLangs.Add(dutCheckbox.Text);
-            if (porCheckbox.Enabled) EnabledLangs.Add(porCheckbox.Text);
-            if (gerCheckbox.Enabled) EnabledLangs.Add(gerCheckbox.Text);
+            if (aengCheckbox.Checked) EnabledLangs.Add(aengCheckbox.Text);
+            if (freCheckbox.Checked) EnabledLangs.Add(freCheckbox.Text);
+            if (spaCheckbox.Checked) EnabledLangs.Add(spaCheckbox.Text);
+            if (itaCheckbox.Checked) EnabledLangs.Add(itaCheckbox.Text);
+            if (rusCheckbox.Checked) EnabledLangs.Add(rusCheckbox.Text);
+            if (dutCheckbox.Checked) EnabledLangs.Add(dutCheckbox.Text);
+            if (porCheckbox.Checked) EnabledLangs.Add(porCheckbox.Text);
+            if (gerCheckbox.Checked) EnabledLangs.Add(gerCheckbox.Text);
 
             foreach (string lang in EnabledLangs)
             {
@@ -402,8 +404,8 @@ namespace RussellNX
                 xml.Element("Application").Add(new XElement("Title", new XElement("Language", lang), new XElement("Name", GameNameBox.Text), new XElement("Publisher", AuthorBox.Text)));
             }
             xml.Element("Application").Element("DisplayVersion").Value = VersionBox.Text;
-            xml.Element("Application").Element("DataLossConfirmation").Value = DataLossCheckbox.Enabled ? "Required" : "None";
-            xml.Element("Application").Element("StartupUserAccount").Value = StartupAccCheckbox.Enabled ? "Required" : "None";
+            xml.Element("Application").Element("DataLossConfirmation").Value = DataLossCheckbox.Checked ? "Required" : "None";
+            xml.Element("Application").Element("StartupUserAccount").Value = StartupAccCheckbox.Checked ? "Required" : "None";
 
             //titleid stuff
             xml.Element("Application").Element("SaveDataOwnerId").Value = "0x" + TitleIDBox.Text.ToLower();
@@ -428,6 +430,19 @@ namespace RussellNX
             prnt("Patching main.npdm...");
             string npdmPath = TempDirectoryPath + "\\build\\exefs\\main.npdm";
             byte[] npdmData = File.ReadAllBytes(npdmPath);
+            //1104 offset to titleID.
+            //1111 end. (last byte)
+            //8 bytes.
+            int d = 0;
+            for (int c = 0; c < 8; c++)
+            {
+                string curChar = TitleIDBox.Text.Substring(d, 2);
+                byte curByte = Convert.ToByte(curChar, 16);
+                npdmData[1111 - c] = curByte;
+                d += 2;
+            }
+            File.Delete(npdmPath);
+            File.WriteAllBytes(npdmPath, npdmData);
             //TODO!!
 
             //MessageBox.Show("break on me");
@@ -438,7 +453,7 @@ namespace RussellNX
             var romfsdir = @".\build\romfs";
             var logodir = @".\build\logo";
             var controldir = @".\build\control";
-            args = @" -k """ + KeysBox.Text + @""" --keygeneration 6 --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo";
+            args = @" -k """ + KeysBox.Text + @""" --keygeneration 5 --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo";
             prnt(args);
             process.StartInfo.Arguments = args;
             process.StartInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "hacbrewpack.exe";
@@ -460,6 +475,8 @@ namespace RussellNX
             Process.Start("explorer.exe", TempDirectoryPath + "\\hacbrewpack_nsp"); //open the build directory.
             prnt("Explorer window with your file should be opened...");
             prnt("Thanks for using RussellNX and god bless the United States of France!");
+
+            BuildButton.Enabled = true;
         }
 
         private void KeysBtn_Click(object sender, EventArgs e)
@@ -549,7 +566,7 @@ namespace RussellNX
         public void CopyLang(CheckBox c, string dir)
         {
             string langName = c.Text;
-            if (c.Enabled)
+            if (c.Checked)
             {
                 prnt("Copying " + GameIconPath + " to " + dir + " ...");
                 File.Copy(GameIconPath, dir + "icon_" + langName + ".dat");

@@ -187,7 +187,7 @@
             // 
             // IconChooseBtn
             // 
-            this.IconChooseBtn.Location = new System.Drawing.Point(274, 76);
+            this.IconChooseBtn.Location = new System.Drawing.Point(131, 47);
             this.IconChooseBtn.Name = "IconChooseBtn";
             this.IconChooseBtn.Size = new System.Drawing.Size(137, 23);
             this.IconChooseBtn.TabIndex = 14;
@@ -278,7 +278,7 @@
             // RuntimeLabelBox
             // 
             this.RuntimeLabelBox.AutoSize = true;
-            this.RuntimeLabelBox.Location = new System.Drawing.Point(417, 60);
+            this.RuntimeLabelBox.Location = new System.Drawing.Point(274, 60);
             this.RuntimeLabelBox.Name = "RuntimeLabelBox";
             this.RuntimeLabelBox.Size = new System.Drawing.Size(86, 13);
             this.RuntimeLabelBox.TabIndex = 23;
@@ -286,7 +286,7 @@
             // 
             // RuntimeVersionBox
             // 
-            this.RuntimeVersionBox.Location = new System.Drawing.Point(420, 79);
+            this.RuntimeVersionBox.Location = new System.Drawing.Point(274, 79);
             this.RuntimeVersionBox.Mask = "0.0.0.000";
             this.RuntimeVersionBox.Name = "RuntimeVersionBox";
             this.RuntimeVersionBox.Size = new System.Drawing.Size(83, 20);
@@ -297,7 +297,7 @@
             // AdvancedOptionsLabel
             // 
             this.AdvancedOptionsLabel.AutoSize = true;
-            this.AdvancedOptionsLabel.Location = new System.Drawing.Point(417, 102);
+            this.AdvancedOptionsLabel.Location = new System.Drawing.Point(274, 103);
             this.AdvancedOptionsLabel.Name = "AdvancedOptionsLabel";
             this.AdvancedOptionsLabel.Size = new System.Drawing.Size(96, 13);
             this.AdvancedOptionsLabel.TabIndex = 26;
@@ -306,7 +306,7 @@
             // StartupAccCheckbox
             // 
             this.StartupAccCheckbox.AutoSize = true;
-            this.StartupAccCheckbox.Location = new System.Drawing.Point(420, 118);
+            this.StartupAccCheckbox.Location = new System.Drawing.Point(274, 123);
             this.StartupAccCheckbox.Name = "StartupAccCheckbox";
             this.StartupAccCheckbox.Size = new System.Drawing.Size(161, 17);
             this.StartupAccCheckbox.TabIndex = 27;
@@ -316,7 +316,7 @@
             // DataLossCheckbox
             // 
             this.DataLossCheckbox.AutoSize = true;
-            this.DataLossCheckbox.Location = new System.Drawing.Point(420, 141);
+            this.DataLossCheckbox.Location = new System.Drawing.Point(274, 143);
             this.DataLossCheckbox.Name = "DataLossCheckbox";
             this.DataLossCheckbox.Size = new System.Drawing.Size(234, 17);
             this.DataLossCheckbox.TabIndex = 28;
@@ -326,7 +326,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(417, 161);
+            this.label1.Location = new System.Drawing.Point(274, 167);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(115, 13);
             this.label1.TabIndex = 29;
@@ -338,7 +338,7 @@
             this.aengCheckbox.Checked = true;
             this.aengCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.aengCheckbox.Enabled = false;
-            this.aengCheckbox.Location = new System.Drawing.Point(420, 177);
+            this.aengCheckbox.Location = new System.Drawing.Point(274, 187);
             this.aengCheckbox.Name = "aengCheckbox";
             this.aengCheckbox.Size = new System.Drawing.Size(104, 17);
             this.aengCheckbox.TabIndex = 30;
@@ -348,7 +348,7 @@
             // freCheckbox
             // 
             this.freCheckbox.AutoSize = true;
-            this.freCheckbox.Location = new System.Drawing.Point(420, 200);
+            this.freCheckbox.Location = new System.Drawing.Point(274, 211);
             this.freCheckbox.Name = "freCheckbox";
             this.freCheckbox.Size = new System.Drawing.Size(59, 17);
             this.freCheckbox.TabIndex = 31;
@@ -358,7 +358,7 @@
             // spaCheckbox
             // 
             this.spaCheckbox.AutoSize = true;
-            this.spaCheckbox.Location = new System.Drawing.Point(420, 223);
+            this.spaCheckbox.Location = new System.Drawing.Point(274, 231);
             this.spaCheckbox.Name = "spaCheckbox";
             this.spaCheckbox.Size = new System.Drawing.Size(64, 17);
             this.spaCheckbox.TabIndex = 32;
@@ -368,7 +368,7 @@
             // itaCheckbox
             // 
             this.itaCheckbox.AutoSize = true;
-            this.itaCheckbox.Location = new System.Drawing.Point(420, 246);
+            this.itaCheckbox.Location = new System.Drawing.Point(274, 251);
             this.itaCheckbox.Name = "itaCheckbox";
             this.itaCheckbox.Size = new System.Drawing.Size(54, 17);
             this.itaCheckbox.TabIndex = 33;
@@ -378,7 +378,7 @@
             // rusCheckbox
             // 
             this.rusCheckbox.AutoSize = true;
-            this.rusCheckbox.Location = new System.Drawing.Point(420, 269);
+            this.rusCheckbox.Location = new System.Drawing.Point(274, 274);
             this.rusCheckbox.Name = "rusCheckbox";
             this.rusCheckbox.Size = new System.Drawing.Size(64, 17);
             this.rusCheckbox.TabIndex = 34;
@@ -388,7 +388,7 @@
             // dutCheckbox
             // 
             this.dutCheckbox.AutoSize = true;
-            this.dutCheckbox.Location = new System.Drawing.Point(420, 292);
+            this.dutCheckbox.Location = new System.Drawing.Point(274, 295);
             this.dutCheckbox.Name = "dutCheckbox";
             this.dutCheckbox.Size = new System.Drawing.Size(55, 17);
             this.dutCheckbox.TabIndex = 35;
@@ -398,7 +398,7 @@
             // porCheckbox
             // 
             this.porCheckbox.AutoSize = true;
-            this.porCheckbox.Location = new System.Drawing.Point(420, 315);
+            this.porCheckbox.Location = new System.Drawing.Point(274, 315);
             this.porCheckbox.Name = "porCheckbox";
             this.porCheckbox.Size = new System.Drawing.Size(80, 17);
             this.porCheckbox.TabIndex = 36;
@@ -408,7 +408,7 @@
             // gerCheckbox
             // 
             this.gerCheckbox.AutoSize = true;
-            this.gerCheckbox.Location = new System.Drawing.Point(420, 339);
+            this.gerCheckbox.Location = new System.Drawing.Point(274, 338);
             this.gerCheckbox.Name = "gerCheckbox";
             this.gerCheckbox.Size = new System.Drawing.Size(63, 17);
             this.gerCheckbox.TabIndex = 37;
