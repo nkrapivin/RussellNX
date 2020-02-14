@@ -90,6 +90,8 @@ namespace RussellNX
                 MessageBox.Show("ERROR!\ndefault_icon.jpg is missing\nPlease redownload RussellNX!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
                 return;
+
+                //TODO: do something here...
             }
 
             IconPicBox.Image = new Bitmap(GameIconPath);
@@ -272,7 +274,6 @@ namespace RussellNX
                     using (var stream = File.OpenRead(RuntimePath + "\\bin\\BouncyCastle.Crypto.dll"))
                     {
                         hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToUpperInvariant();
-                        stream.Close();
                         stream.Dispose();
                     }
                 }
