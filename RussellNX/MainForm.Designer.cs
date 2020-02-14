@@ -103,7 +103,7 @@
             this.TitleIDBox.Name = "TitleIDBox";
             this.TitleIDBox.Size = new System.Drawing.Size(428, 20);
             this.TitleIDBox.TabIndex = 3;
-            this.TitleIDBox.Text = "0100F00DBABE0020";
+            this.TitleIDBox.Text = "0100010100000000";
             // 
             // GameNameLabel
             // 

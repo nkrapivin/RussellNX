@@ -115,7 +115,7 @@ namespace RussellNX
             //Check for keys.txt here
             if (!File.Exists(KeysBox.Text))
             {
-                MessageBox.Show("Please specify your keys.txt file after clicking OK", "No keys.txt specified!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Please specify your Switch keys file after clicking OK", "No keys file specified!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 OpenFileDialog KeysChooseDialog = new OpenFileDialog();
                 KeysChooseDialog.Filter = "All Files|*.*";
 
@@ -263,7 +263,8 @@ namespace RussellNX
             else prebuiltPath = AppDomain.CurrentDomain.BaseDirectory + @"runners\build" + RuntimeVersion;
 
             //Check for PwnieCastle.Crypto.dll
-            if (RuntimeVersion != "2.2.3.344") //this version has public_key vuln, newer don't.
+            //if (RuntimeVersion != "2.2.3.344") //this version has public_key vuln, newer don't.
+            if (int.Parse(RuntimeVersion.Substring(4, 1)) > 3)
             {
                 string hash = "";
                 using (var md5 = MD5.Create())
@@ -347,7 +348,7 @@ namespace RussellNX
             Directory.CreateDirectory(CacheDir);
             Directory.CreateDirectory(OutputDir);
 
-            string GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=False /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @""" /preprocess=""" + CacheDir + @"""";
+            string GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @""" /preprocess=""" + CacheDir + @"""";
             prnt(GMACArgs);
             //return;
 
@@ -366,10 +367,19 @@ namespace RussellNX
             process.StartInfo.FileName = GMACPath;
             process.StartInfo.Arguments = GMACArgs;
             process.Start();
-            while (!process.StandardOutput.EndOfStream)
+            while (true)
             {
-                prnt(process.StandardOutput.ReadLine());
-                Application.DoEvents(); //update LogBox richtextbox
+                Application.DoEvents();
+
+                if (!process.StandardOutput.EndOfStream)
+                    prnt(process.StandardOutput.ReadLine());
+                if (!process.StandardError.EndOfStream)
+                    prnt(process.StandardError.ReadLine());
+
+                if (process.StandardError.EndOfStream && process.StandardOutput.EndOfStream)
+                    break;
+
+                Application.DoEvents(); //update LogBox.
             }
             process.WaitForExit();
 
@@ -379,10 +389,19 @@ namespace RussellNX
 
             prnt("\nBuilding your project...\n");
             process.Start();
-            while (!process.StandardOutput.EndOfStream)
+            while (true)
             {
-                prnt(process.StandardOutput.ReadLine());
-                Application.DoEvents(); //update LogBox richtextbox
+                Application.DoEvents();
+
+                if (!process.StandardOutput.EndOfStream)
+                    prnt(process.StandardOutput.ReadLine());
+                if (!process.StandardError.EndOfStream)
+                    prnt(process.StandardError.ReadLine());
+
+                if (process.StandardError.EndOfStream && process.StandardOutput.EndOfStream)
+                    break;
+
+                Application.DoEvents(); //update LogBox.
             }
             process.WaitForExit();
 
@@ -420,10 +439,19 @@ namespace RussellNX
             process.StartInfo.WorkingDirectory = TempDirectoryPath;
             process.StartInfo.Arguments = @"-a createnacp -i temp.xml -o .\build\control\control.nacp";
             process.Start();
-            while (!process.StandardOutput.EndOfStream)
+            while (true)
             {
-                prnt(process.StandardOutput.ReadLine());
-                Application.DoEvents(); //update LogBox richtextbox
+                Application.DoEvents();
+
+                if (!process.StandardOutput.EndOfStream)
+                    prnt(process.StandardOutput.ReadLine());
+                if (!process.StandardError.EndOfStream)
+                    prnt(process.StandardError.ReadLine());
+
+                if (process.StandardError.EndOfStream && process.StandardOutput.EndOfStream)
+                    break;
+
+                Application.DoEvents(); //update LogBox.
             }
             process.WaitForExit();
 
@@ -436,6 +464,7 @@ namespace RussellNX
             int d = 0;
             for (int c = 0; c < 8; c++)
             {
+                prnt("byte " + c.ToString());
                 string curChar = TitleIDBox.Text.Substring(d, 2);
                 byte curByte = Convert.ToByte(curChar, 16);
                 npdmData[1111 - c] = curByte;
@@ -453,16 +482,25 @@ namespace RussellNX
             var romfsdir = @".\build\romfs";
             var logodir = @".\build\logo";
             var controldir = @".\build\control";
-            args = @" -k """ + KeysBox.Text + @""" --keygeneration 5 --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo";
+            args = @" -k """ + KeysBox.Text + @""" --keygeneration 5 --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo --sdkversion 07030200";
             prnt(args);
             process.StartInfo.Arguments = args;
             process.StartInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "hacbrewpack.exe";
             process.StartInfo.WorkingDirectory = TempDirectoryPath;
             process.Start();
-            while (!process.StandardOutput.EndOfStream)
+            while (true)
             {
-                prnt(process.StandardOutput.ReadLine());
-                Application.DoEvents(); //update LogBox richtextbox
+                Application.DoEvents();
+
+                if (!process.StandardOutput.EndOfStream)
+                    prnt(process.StandardOutput.ReadLine());
+                if (!process.StandardError.EndOfStream)
+                    prnt(process.StandardError.ReadLine());
+
+                if (process.StandardError.EndOfStream && process.StandardOutput.EndOfStream)
+                    break;
+
+                Application.DoEvents(); //update LogBox.
             }
             process.WaitForExit();
 
@@ -507,6 +545,7 @@ namespace RussellNX
             RuntimeVersionBox.Text = RuntimeVersion;
             RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
             FriendlyYYPName = Path.GetFileNameWithoutExtension(ProjectPathBox.Text);
+            LoadCheckboxStr(data["Main"]["CheckboxState"]);
             prnt("GameName: " + FriendlyYYPName);
             prnt("RuntimePath: " + RuntimePath);
             prnt("Loaded!");
@@ -523,6 +562,7 @@ namespace RussellNX
             data["Main"]["AppKeysPath"] = KeysBox.Text;
             data["Main"]["AppIconPath"] = GameIconPath;
             data["Main"]["RuntimeVersion"] = RuntimeVersion;
+            data["Main"]["CheckboxState"] = RetCheckboxStr();
             data["AppVersion"]["RNXVer"] = RNXVersionString;
             parser.WriteFile(AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini", data);
             prnt("Saved!");
@@ -543,7 +583,7 @@ namespace RussellNX
             var parser = new FileIniDataParser();
             IniData data = parser.ReadFile(fname);
             data.Sections.AddSection("Main");
-            data.Sections.GetSectionData("Main").Comments.Add("This is a RussellNX configuration file, edit with caution.");
+            data.Sections.GetSectionData("Main").Comments.Add(" This is a RussellNX configuration file, edit with caution.");
             parser.WriteFile(fname, data);
             prnt("Default RussellNX.ini was made.");
             Focus(); //Focus MainForm
@@ -571,6 +611,42 @@ namespace RussellNX
                 prnt("Copying " + GameIconPath + " to " + dir + " ...");
                 File.Copy(GameIconPath, dir + "icon_" + langName + ".dat");
             }
+        }
+
+        public string RetCheckboxStr()
+        {
+            string ret = "";
+            ret += aengCheckbox.Checked ? "1" : "0";
+            ret += freCheckbox.Checked ? "1" : "0";
+            ret += spaCheckbox.Checked ? "1" : "0";
+            ret += itaCheckbox.Checked ? "1" : "0";
+            ret += rusCheckbox.Checked ? "1" : "0";
+            ret += dutCheckbox.Checked ? "1" : "0";
+            ret += porCheckbox.Checked ? "1" : "0";
+            ret += gerCheckbox.Checked ? "1" : "0";
+
+            ret += DataLossCheckbox.Checked ? "1" : "0";
+            ret += StartupAccCheckbox.Checked ? "1" : "0";
+
+            return ret;
+        }
+
+        public void LoadCheckboxStr(string str)
+        {
+            if (str == null) return;
+            //aengCheckbox.Checked = str.Substring(0, 1) == "1" ? true : false;
+            freCheckbox.Checked = str.Substring(1, 1) == "1" ? true : false;
+            spaCheckbox.Checked = str.Substring(2, 1) == "1" ? true : false;
+            itaCheckbox.Checked = str.Substring(3, 1) == "1" ? true : false;
+            rusCheckbox.Checked = str.Substring(4, 1) == "1" ? true : false;
+            dutCheckbox.Checked = str.Substring(5, 1) == "1" ? true : false;
+            porCheckbox.Checked = str.Substring(6, 1) == "1" ? true : false;
+            gerCheckbox.Checked = str.Substring(7, 1) == "1" ? true : false;
+
+            DataLossCheckbox.Checked = str.Substring(8, 1) == "1" ? true : false;
+            StartupAccCheckbox.Checked = str.Substring(9, 1) == "1" ? true : false;
+
+            return;
         }
     }
 }
