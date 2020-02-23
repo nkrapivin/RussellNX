@@ -20,7 +20,7 @@ namespace RussellNX
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
         public static string GameIconPath = AppDomain.CurrentDomain.BaseDirectory + "default_icon.jpg";
-        public static string RNXVersionString = "1.3.0";
+        public static string RNXVersionString = "1.3.1";
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
@@ -87,7 +87,7 @@ namespace RussellNX
 
             if (!File.Exists(GameIconPath))
             {
-                MessageBox.Show("ERROR!\ndefault_icon.jpg is missing\nPlease redownload RussellNX!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("ERROR!\nIcon is missing.\nPlease redownload RussellNX or remove RussellNX.ini!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
                 return;
 
@@ -252,7 +252,7 @@ namespace RussellNX
 
             if (!File.Exists(RuntimePath + "\\bin\\GMAssetCompiler.exe"))
             {
-                MessageBox.Show("This path is invalid, maybe your runtime version is invalid?", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("This path is invalid, maybe your runtime version is invalid?\n\nrpath: " + RuntimePath, "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -601,7 +601,7 @@ namespace RussellNX
         private void RuntimeVersionBox_TextChanged(object sender, EventArgs e)
         {
             RuntimeVersion = RuntimeVersionBox.Text;
-            RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersionBox;
+            RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         }
 
         public void CopyLang(CheckBox c, string dir)
