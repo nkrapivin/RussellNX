@@ -11,6 +11,7 @@ using IniParser;
 using IniParser.Model;
 using System.Xml.Linq;
 using System.Collections.Generic;
+using System.Text;
 
 namespace RussellNX
 {
@@ -20,7 +21,7 @@ namespace RussellNX
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
         public static string GameIconPath = AppDomain.CurrentDomain.BaseDirectory + "default_icon.jpg";
-        public static string RNXVersionString = "1.3.1";
+        public static string RNXVersionString = "1.3.2";
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
@@ -225,6 +226,7 @@ namespace RussellNX
             {
                 LogBox.Focus();
                 LogBox.SelectionStart = LogBox.Text.Length;
+                LogBox.ScrollToCaret();
             }
         }
 
@@ -360,6 +362,7 @@ namespace RussellNX
             prnt("\nPreprocessing game project...\n");
 
             Process process = new Process();
+            StringBuilder processSB = new StringBuilder();
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
@@ -367,22 +370,16 @@ namespace RussellNX
             process.StartInfo.WorkingDirectory = RuntimePath + "\\bin";
             process.StartInfo.FileName = GMACPath;
             process.StartInfo.Arguments = GMACArgs;
+            process.ErrorDataReceived += (a, b) => { processSB.Append(b.Data); prnt(processSB.ToString()); processSB.Clear(); };
+            process.OutputDataReceived += (a, b) => { processSB.Append(b.Data); prnt(processSB.ToString()); processSB.Clear(); };
             process.Start();
-            while (true)
-            {
-                Application.DoEvents();
-
-                if (!process.StandardOutput.EndOfStream)
-                    prnt(process.StandardOutput.ReadLine());
-                if (!process.StandardError.EndOfStream)
-                    prnt(process.StandardError.ReadLine());
-
-                if (process.StandardError.EndOfStream && process.StandardOutput.EndOfStream)
-                    break;
-
-                Application.DoEvents(); //update LogBox.
-            }
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            while (!process.HasExited) Application.DoEvents(); 
             process.WaitForExit();
+            process.CancelErrorRead();
+            process.CancelOutputRead();
+            
 
             GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @"""";
             process.StartInfo.Arguments = GMACArgs;
@@ -390,21 +387,12 @@ namespace RussellNX
 
             prnt("\nBuilding your project...\n");
             process.Start();
-            while (true)
-            {
-                Application.DoEvents();
-
-                if (!process.StandardOutput.EndOfStream)
-                    prnt(process.StandardOutput.ReadLine());
-                if (!process.StandardError.EndOfStream)
-                    prnt(process.StandardError.ReadLine());
-
-                if (process.StandardError.EndOfStream && process.StandardOutput.EndOfStream)
-                    break;
-
-                Application.DoEvents(); //update LogBox.
-            }
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            while (!process.HasExited) Application.DoEvents();
             process.WaitForExit();
+            process.CancelErrorRead();
+            process.CancelOutputRead();
 
             prnt("\nGenerating control.nacp...");
             XDocument xml = XDocument.Load(AppDomain.CurrentDomain.BaseDirectory + "runners\\dummy.xml");
@@ -440,21 +428,12 @@ namespace RussellNX
             process.StartInfo.WorkingDirectory = TempDirectoryPath;
             process.StartInfo.Arguments = @"-a createnacp -i temp.xml -o .\build\control\control.nacp";
             process.Start();
-            while (true)
-            {
-                Application.DoEvents();
-
-                if (!process.StandardOutput.EndOfStream)
-                    prnt(process.StandardOutput.ReadLine());
-                if (!process.StandardError.EndOfStream)
-                    prnt(process.StandardError.ReadLine());
-
-                if (process.StandardError.EndOfStream && process.StandardOutput.EndOfStream)
-                    break;
-
-                Application.DoEvents(); //update LogBox.
-            }
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            while (!process.HasExited) Application.DoEvents();
             process.WaitForExit();
+            process.CancelErrorRead();
+            process.CancelOutputRead();
 
             prnt("Patching main.npdm...");
             string npdmPath = TempDirectoryPath + "\\build\\exefs\\main.npdm";
@@ -489,21 +468,12 @@ namespace RussellNX
             process.StartInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "hacbrewpack.exe";
             process.StartInfo.WorkingDirectory = TempDirectoryPath;
             process.Start();
-            while (true)
-            {
-                Application.DoEvents();
-
-                if (!process.StandardOutput.EndOfStream)
-                    prnt(process.StandardOutput.ReadLine());
-                if (!process.StandardError.EndOfStream)
-                    prnt(process.StandardError.ReadLine());
-
-                if (process.StandardError.EndOfStream && process.StandardOutput.EndOfStream)
-                    break;
-
-                Application.DoEvents(); //update LogBox.
-            }
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            while (!process.HasExited) Application.DoEvents();
             process.WaitForExit();
+            process.CancelErrorRead();
+            process.CancelOutputRead();
 
             //free things
             process.Close();
