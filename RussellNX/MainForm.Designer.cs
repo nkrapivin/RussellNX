@@ -158,6 +158,7 @@
             // VersionBox
             // 
             this.VersionBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.VersionBox.Culture = new System.Globalization.CultureInfo("en-001");
             this.VersionBox.Location = new System.Drawing.Point(700, 251);
             this.VersionBox.Mask = "0.0.0";
             this.VersionBox.Name = "VersionBox";
@@ -286,6 +287,7 @@
             // 
             // RuntimeVersionBox
             // 
+            this.RuntimeVersionBox.Culture = new System.Globalization.CultureInfo("en-001");
             this.RuntimeVersionBox.Location = new System.Drawing.Point(274, 79);
             this.RuntimeVersionBox.Mask = "0.0.0.000";
             this.RuntimeVersionBox.Name = "RuntimeVersionBox";

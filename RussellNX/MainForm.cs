@@ -21,7 +21,7 @@ namespace RussellNX
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
         public static string GameIconPath = AppDomain.CurrentDomain.BaseDirectory + "default_icon.jpg";
-        public static string RNXVersionString = "1.3.2";
+        public static string RNXVersionString = "1.3.3";
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
