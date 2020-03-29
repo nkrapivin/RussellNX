@@ -109,11 +109,15 @@ namespace RussellNX
             MessageBox.Show("WARNING:\n1) This tool is highly experimental!\n2) Installing Custom NSPs may get your Switch banned, be careful!", "Important Warning.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
             //Cleanup temp dirs
-            for (int i = 1000; i < 9999; i++)
+            try
             {
-                if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + i.ToString()))
-                    Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + i.ToString(), true);
+                for (int i = 1000; i < 9999; i++)
+                {
+                    if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + i.ToString()))
+                        Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + i.ToString(), true);
+                }
             }
+            catch { }
 
             //Check for keys.txt here
             if (!File.Exists(KeysBox.Text))
