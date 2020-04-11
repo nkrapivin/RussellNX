@@ -132,6 +132,8 @@ namespace RussellNX
                 }
             }
 
+            File.Delete(AppDomain.CurrentDomain.BaseDirectory + "RNXLOG.log");
+
             prnt("RussellNX Version " + RNXVersionString + " is waiting for you, master!");
         }
 
@@ -232,6 +234,8 @@ namespace RussellNX
                 LogBox.SelectionStart = LogBox.Text.Length;
                 LogBox.ScrollToCaret();
             }
+
+            File.AppendAllText(AppDomain.CurrentDomain.BaseDirectory + "RNXLOG.log", log + "\n");
         }
 
         private void BuildButton_Click(object sender, EventArgs e)
