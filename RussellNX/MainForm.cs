@@ -106,7 +106,7 @@ namespace RussellNX
             //other runtimes maybe later idk...
             if (!File.Exists(RuntimePath + "\\bin\\GMAssetCompiler.exe"))
             {
-                MessageBox.Show("ERROR!\nThe version of runtime you chose is not installed! Please make sure to download it in GMS2 in File->Preferences->Runtime Feeds->Master (the tool uses 2.2.3.344 as default)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("ERROR!\nCannot find runtime. This error is not fatal and can happen if you only have the latest runtime.\nYou can download RussellNX's recommended runtime GMS 2 in File->Preferences->Runtime Feeds->Master (the tool is using 2.2.3.344 as default)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             //Cleanup temp dirs
@@ -686,7 +686,7 @@ namespace RussellNX
 
                     File.Copy(ProjectPathBox.Text, ProjectPathBox.Text + ".rnxbk");
                     File.WriteAllLines(ProjectPathBox.Text, ListToArray(bigProj), Encoding.UTF8);
-                    prnt("Backed up .yyp as " + ProjectPathBox.Text + ".rnxbk (if something had gone wrong, delete broken .yyp and remove .rnxbk extension.");
+                    prnt("Backed up .yyp as " + ProjectPathBox.Text + ".rnxbk (if something had gone wrong, delete broken .yyp and remove .rnxbk extension.)");
                     prnt("Switch settings generated!");
                 }
                 else return false;
