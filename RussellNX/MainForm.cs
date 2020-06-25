@@ -646,6 +646,7 @@ namespace RussellNX
 
         private void ProjectSettingsBtn_Click(object sender, EventArgs e)
         {
+            if (!File.Exists(ProjectPathBox.Text)) return;
             if (!CheckSwitchOptions()) return;
             var frm = new ProjectSettings(ProjectPathBox.Text);
             frm.ShowDialog();
