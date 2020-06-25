@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.ProjectPathBox = new System.Windows.Forms.TextBox();
             this.ProjectPathLabel = new System.Windows.Forms.Label();
             this.TitleIDLabel = new System.Windows.Forms.Label();
@@ -63,6 +64,9 @@
             this.dutCheckbox = new System.Windows.Forms.CheckBox();
             this.porCheckbox = new System.Windows.Forms.CheckBox();
             this.gerCheckbox = new System.Windows.Forms.CheckBox();
+            this.ProjectSettingsBtn = new System.Windows.Forms.Button();
+            this.ExportLogBtn = new System.Windows.Forms.Button();
+            this.CleanLogBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.IconPicBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -249,12 +253,14 @@
             // LogBox
             // 
             this.LogBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.LogBox.DetectUrls = false;
             this.LogBox.Location = new System.Drawing.Point(15, 364);
             this.LogBox.Name = "LogBox";
             this.LogBox.ReadOnly = true;
             this.LogBox.Size = new System.Drawing.Size(1113, 279);
-            this.LogBox.TabIndex = 21;
+            this.LogBox.TabIndex = 0;
             this.LogBox.Text = "";
+            this.LogBox.WordWrap = false;
             // 
             // LogTitle
             // 
@@ -417,11 +423,44 @@
             this.gerCheckbox.Text = "German";
             this.gerCheckbox.UseVisualStyleBackColor = true;
             // 
+            // ProjectSettingsBtn
+            // 
+            this.ProjectSettingsBtn.Location = new System.Drawing.Point(700, 322);
+            this.ProjectSettingsBtn.Name = "ProjectSettingsBtn";
+            this.ProjectSettingsBtn.Size = new System.Drawing.Size(97, 23);
+            this.ProjectSettingsBtn.TabIndex = 38;
+            this.ProjectSettingsBtn.Text = "Project settings...";
+            this.ProjectSettingsBtn.UseVisualStyleBackColor = true;
+            this.ProjectSettingsBtn.Click += new System.EventHandler(this.ProjectSettingsBtn_Click);
+            // 
+            // ExportLogBtn
+            // 
+            this.ExportLogBtn.Location = new System.Drawing.Point(12, 649);
+            this.ExportLogBtn.Name = "ExportLogBtn";
+            this.ExportLogBtn.Size = new System.Drawing.Size(86, 23);
+            this.ExportLogBtn.TabIndex = 39;
+            this.ExportLogBtn.Text = "Export log";
+            this.ExportLogBtn.UseVisualStyleBackColor = true;
+            this.ExportLogBtn.Click += new System.EventHandler(this.ExportLogBtn_Click);
+            // 
+            // CleanLogBtn
+            // 
+            this.CleanLogBtn.Location = new System.Drawing.Point(104, 649);
+            this.CleanLogBtn.Name = "CleanLogBtn";
+            this.CleanLogBtn.Size = new System.Drawing.Size(75, 23);
+            this.CleanLogBtn.TabIndex = 40;
+            this.CleanLogBtn.Text = "Clean log";
+            this.CleanLogBtn.UseVisualStyleBackColor = true;
+            this.CleanLogBtn.Click += new System.EventHandler(this.CleanLogBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1140, 684);
+            this.Controls.Add(this.CleanLogBtn);
+            this.Controls.Add(this.ExportLogBtn);
+            this.Controls.Add(this.ProjectSettingsBtn);
             this.Controls.Add(this.gerCheckbox);
             this.Controls.Add(this.porCheckbox);
             this.Controls.Add(this.dutCheckbox);
@@ -457,6 +496,10 @@
             this.Controls.Add(this.TitleIDLabel);
             this.Controls.Add(this.ProjectPathLabel);
             this.Controls.Add(this.ProjectPathBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(1156, 723);
+            this.MinimumSize = new System.Drawing.Size(1156, 723);
             this.Name = "MainForm";
             this.Text = "RussellNX: Main form.";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
@@ -503,6 +546,9 @@
         private System.Windows.Forms.CheckBox dutCheckbox;
         private System.Windows.Forms.CheckBox porCheckbox;
         private System.Windows.Forms.CheckBox gerCheckbox;
+        private System.Windows.Forms.Button ProjectSettingsBtn;
+        private System.Windows.Forms.Button ExportLogBtn;
+        private System.Windows.Forms.Button CleanLogBtn;
     }
 }
 

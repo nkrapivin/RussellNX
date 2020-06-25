@@ -12,16 +12,20 @@ using IniParser.Model;
 using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Text;
+using System.Resources;
+using System.Linq;
 
 namespace RussellNX
 {
     public partial class MainForm : Form
     {
+        public static string AppDir = AppDomain.CurrentDomain.BaseDirectory;
         public static string RuntimeVersion = "2.2.3.344";
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
-        public static string GameIconPath = AppDomain.CurrentDomain.BaseDirectory + "default_icon.jpg";
-        public static string RNXVersionString = "1.3.3";
+        public static string GameIconPath = AppDir + "default_icon.jpg";
+        public static string RNXVersionString = "1.3.5";
+        public static string LogText = "";
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
@@ -32,43 +36,42 @@ namespace RussellNX
             //Check for write access first.
             try
             {
-                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "dircheck.txt", "");
+                File.WriteAllText(AppDir + "dircheck.txt", "");
             }
             catch (Exception e)
             {
                 //for some reason this messagebox doesn't wanna show up (??)
-                MessageBox.Show("ERROR!\nYour current RussellNX directory doesn't have Read Write permissions.\nPlease move RussellNX to Desktop, Documents, Downloads heck, everywhere else!\n\nException: " + e.ToString(), "Idiot Check Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("ERROR!\nYour current RussellNX directory doesn't have Read Write permissions.\nPlease move RussellNX to Desktop, Documents, Downloads heck, anywhere else!\n\nException: " + e.ToString(), "Idiot Check Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
                 return;
             }
-            File.Delete(AppDomain.CurrentDomain.BaseDirectory + "dircheck.txt");
+            File.Delete(AppDir + "dircheck.txt");
             //I mean, if this check passed, this file should exist, if check failed, program exits before this line executes.
 
             //Update check...
-            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "updater.exe")) File.Delete(AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
+            if (File.Exists(AppDir + "updater.exe")) File.Delete(AppDir + "updater.exe");
             WebClient Client = new WebClient();
             bool allFine = true;
-            int versionHigher = 0;
             Version v1, v2;
             Client.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.BypassCache);
-            try { Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/version", AppDomain.CurrentDomain.BaseDirectory + "latest"); }
+            try { Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/version", AppDir + "latest"); }
             catch { allFine = false; }
             if (allFine)
             {
-                string verstring = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "latest");
-                File.Delete(AppDomain.CurrentDomain.BaseDirectory + "latest");
+                string verstring = File.ReadAllText(AppDir + "latest");
+                File.Delete(AppDir + "latest");
                 //MessageBox.Show(RNXVersion[1]);
                 v1 = new Version(verstring);
                 v2 = new Version(RNXVersionString);
-                versionHigher = v1.CompareTo(v2);
+                int versionHigher = v1.CompareTo(v2);
                 if (versionHigher > 0)
                 {
                     DialogResult dialog = MessageBox.Show("A RussellNX update is released!\nYour Version: " + RNXVersionString + "\nNew Version: " + verstring + "\nWould you like to update?\n\nChangelog can be found on GitHub.", "RussellNX: Auto Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                     if (dialog == DialogResult.Yes)
                     {
-                        Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/updater.exe", AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
+                        Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/updater.exe", AppDir + "updater.exe");
                         Client.Dispose();
-                        Process.Start(AppDomain.CurrentDomain.BaseDirectory + "updater.exe");
+                        Process.Start(AppDir + "updater.exe");
                         Environment.Exit(0);
                         return;
                     }
@@ -77,7 +80,9 @@ namespace RussellNX
 
             if (Debugger.IsAttached) Text += " (Running inside Visual Studio)";
 
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini"))
+            prnt("WARNING: Installing Custom NSPs may get your Switch banned, be careful!\n");
+
+            if (!File.Exists(AppDir + "RussellNX.ini"))
             {
                 DefaultSettings();
             }
@@ -88,11 +93,11 @@ namespace RussellNX
 
             if (!File.Exists(GameIconPath))
             {
-                MessageBox.Show("ERROR!\nIcon is missing.\nPlease redownload RussellNX or remove RussellNX.ini!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(-1);
-                return;
-
-                //TODO: do something here...
+                if (!File.Exists(AppDir + "default_icon.png"))
+                {
+                    Properties.Resources.default_icon.Save(AppDir + "default_icon.png");
+                }
+                GameIconPath = AppDir + "default_icon.png";
             }
 
             IconPicBox.Image = new Bitmap(GameIconPath);
@@ -102,19 +107,15 @@ namespace RussellNX
             if (!File.Exists(RuntimePath + "\\bin\\GMAssetCompiler.exe"))
             {
                 MessageBox.Show("ERROR!\nThe version of runtime you chose is not installed! Please make sure to download it in GMS2 in File->Preferences->Runtime Feeds->Master (the tool uses 2.2.3.344 as default)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //Environment.Exit(-1); //-1 because an error has occured.
-                //return;
             }
-
-            MessageBox.Show("WARNING:\n1) This tool is highly experimental!\n2) Installing Custom NSPs may get your Switch banned, be careful!", "Important Warning.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
             //Cleanup temp dirs
             try
             {
                 for (int i = 1000; i < 9999; i++)
                 {
-                    if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + i.ToString()))
-                        Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + i.ToString(), true);
+                    if (Directory.Exists(AppDir + "TEMPDIR" + i.ToString()))
+                        Directory.Delete(AppDir + "TEMPDIR" + i.ToString(), true);
                 }
             }
             catch { }
@@ -131,8 +132,6 @@ namespace RussellNX
                     KeysBox.Text = KeysChooseDialog.FileName;
                 }
             }
-
-            File.Delete(AppDomain.CurrentDomain.BaseDirectory + "RNXLOG.log");
 
             prnt("RussellNX Version " + RNXVersionString + " is waiting for you, master!");
         }
@@ -222,20 +221,29 @@ namespace RussellNX
             CheckForIllegalCrossThreadCalls = false;
 
             //Special command that cleans the LogBox.
-            if (log == "$LOG_CLEAN") { LogBox.Text = ""; StringsCount = 0; }
-            else
-            LogBox.Text += log + "\n"; //Append text
+            if (log == "$LOG_CLEAN") { LogText = ""; StringsCount = 0; }
+            else LogText += log + "\n"; //Append text
 
             //Scroll to the end.
             StringsCount++;
+            LogBox.Text = LogText;
             if (StringsCount > 21)
             {
                 LogBox.Focus();
                 LogBox.SelectionStart = LogBox.Text.Length;
                 LogBox.ScrollToCaret();
             }
+        }
 
-            File.AppendAllText(AppDomain.CurrentDomain.BaseDirectory + "RNXLOG.log", log + "\n");
+        private bool CheckTitleID()
+        {
+            string tt = TitleIDBox.Text;
+            if (tt.Length < TitleIDBox.MaxLength || !UInt64.TryParse(tt, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out _))
+            {
+                MessageBox.Show("Invalid title ID!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
         }
 
         private void BuildButton_Click(object sender, EventArgs e)
@@ -266,13 +274,21 @@ namespace RussellNX
                 return;
             }
 
+            if (!File.Exists(AppDir + "license\\licence.plist"))
+            {
+                MessageBox.Show("Couldn't find fakesigned licence.plist file.\nPlease redownload RussellNX.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             string prebuiltPath = "";
-            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + @"runners\build" + RuntimeVersion))
+            if (!Directory.Exists(AppDir + @"runners\build" + RuntimeVersion))
             {
                 MessageBox.Show("ERROR! Nik didn't built an ExeFS for your runtime version,\ncould you please try a different one?\n\n(or contact nik at nik#5351 and tell him the version you want)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else prebuiltPath = AppDomain.CurrentDomain.BaseDirectory + @"runners\build" + RuntimeVersion;
+            else prebuiltPath = AppDir + @"runners\build" + RuntimeVersion;
+
+            if (!CheckTitleID()) return;
 
             //Check for PwnieCastle.Crypto.dll
             //if (RuntimeVersion != "2.2.3.344") //this version has public_key vuln, newer don't.
@@ -298,14 +314,14 @@ namespace RussellNX
                     }
                     else if (result == DialogResult.Yes)
                     {
-                        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "PwnieCastle.Crypto.dll"))
+                        if (!File.Exists(AppDir + "PwnieCastle.Crypto.dll"))
                         {
                             prnt("ERROR! PwnieCastle library doesn't exist, redownload RussellNX! Building aborted!");
                             return;
                         }
                         prnt("Installing PwnieCastle.Crypto.dll...");
                         File.Copy(RuntimePath + @"\bin\BouncyCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.bak");
-                        File.Copy(AppDomain.CurrentDomain.BaseDirectory + @"PwnieCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.dll", true);
+                        File.Copy(AppDir + @"PwnieCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.dll", true);
                         prnt("Done! Backup is saved in {RuntimeDir}\\bin\\BouncyCastle.Crypto.dll");
                     }
                     else prnt("?????????? try again, please.");
@@ -324,7 +340,7 @@ namespace RussellNX
             prnt("Making Temp Directory");
             Random ind = new Random();
             int ind2 = ind.Next(1000, 9999);
-            string TempDirectoryPath = AppDomain.CurrentDomain.BaseDirectory + "TEMPDIR" + ind2.ToString();
+            string TempDirectoryPath = AppDir + "TEMPDIR" + ind2.ToString();
             if (Directory.Exists(TempDirectoryPath)) Directory.Delete(TempDirectoryPath);
             Directory.CreateDirectory(TempDirectoryPath);
 
@@ -352,7 +368,7 @@ namespace RussellNX
             string OutputDir = TempDirectoryPath + "\\build\\romfs";
             string INIDir = TempDirectoryPath + "\\build\\romfs\\options.ini";
 
-            string LicensePlistPath = AppDomain.CurrentDomain.BaseDirectory + "license"; //public_key'd already ;)
+            string LicensePlistPath = AppDir + "license"; //public_key'd already ;)
 
             //shader fix, fuck yoyo
             Directory.CreateDirectory(TempDir);
@@ -403,7 +419,7 @@ namespace RussellNX
             process.CancelOutputRead();
 
             prnt("\nGenerating control.nacp...");
-            XDocument xml = XDocument.Load(AppDomain.CurrentDomain.BaseDirectory + "runners\\dummy.xml");
+            XDocument xml = XDocument.Load(AppDir + "runners\\dummy.xml");
             List<string> EnabledLangs = new List<string>();
             if (aengCheckbox.Checked) EnabledLangs.Add(aengCheckbox.Text);
             if (freCheckbox.Checked) EnabledLangs.Add(freCheckbox.Text);
@@ -432,7 +448,7 @@ namespace RussellNX
 
             xml.Save(TempDirectoryPath + "\\temp.xml");
 
-            process.StartInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "hptnacp.exe";
+            process.StartInfo.FileName = AppDir + "hptnacp.exe";
             process.StartInfo.WorkingDirectory = TempDirectoryPath;
             process.StartInfo.Arguments = @"-a createnacp -i temp.xml -o .\build\control\control.nacp";
             process.Start();
@@ -473,7 +489,7 @@ namespace RussellNX
             args = @" -k """ + KeysBox.Text + @""" --keygeneration 5 --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo --sdkversion 07030200";
             prnt(args);
             process.StartInfo.Arguments = args;
-            process.StartInfo.FileName = AppDomain.CurrentDomain.BaseDirectory + "hacbrewpack.exe";
+            process.StartInfo.FileName = AppDir + "hacbrewpack.exe";
             process.StartInfo.WorkingDirectory = TempDirectoryPath;
             process.Start();
             process.BeginOutputReadLine();
@@ -512,7 +528,7 @@ namespace RussellNX
         private void LoadSettings()
         {
             var parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini");
+            IniData data = parser.ReadFile(AppDir + "RussellNX.ini");
             ProjectPathBox.Text = data["Main"]["AppYYPPath"];
             TitleIDBox.Text = data["Main"]["AppID"];
             GameNameBox.Text = data["Main"]["AppName"];
@@ -532,7 +548,7 @@ namespace RussellNX
         private void SaveSettings()
         {
             var parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini");
+            IniData data = parser.ReadFile(AppDir + "RussellNX.ini");
             data["Main"]["AppYYPPath"] = ProjectPathBox.Text;
             data["Main"]["AppID"] = TitleIDBox.Text;
             data["Main"]["AppName"] = GameNameBox.Text;
@@ -543,21 +559,21 @@ namespace RussellNX
             data["Main"]["RuntimeVersion"] = RuntimeVersion;
             data["Main"]["CheckboxState"] = RetCheckboxStr();
             data["AppVersion"]["RNXVer"] = RNXVersionString;
-            parser.WriteFile(AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini", data);
+            parser.WriteFile(AppDir + "RussellNX.ini", data);
             prnt("Saved!");
         }
         private void DefaultSettings()
         {
             //Migrate KeysFilePath 1.0 config
-            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "KeysFilePath"))
+            if (File.Exists(AppDir + "KeysFilePath"))
             {
-                string kpath = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "KeysFilePath");
+                string kpath = File.ReadAllText(AppDir + "KeysFilePath");
                 KeysBox.Text = kpath;
-                File.Delete(AppDomain.CurrentDomain.BaseDirectory + "KeysFilePath");
+                File.Delete(AppDir + "KeysFilePath");
             }
 
             //Populate default settings file.
-            string fname = AppDomain.CurrentDomain.BaseDirectory + "RussellNX.ini";
+            string fname = AppDir + "RussellNX.ini";
             File.WriteAllText(fname, "");
             var parser = new FileIniDataParser();
             IniData data = parser.ReadFile(fname);
@@ -626,6 +642,101 @@ namespace RussellNX
             StartupAccCheckbox.Checked = str.Substring(9, 1) == "1" ? true : false;
 
             return;
+        }
+
+        private void ProjectSettingsBtn_Click(object sender, EventArgs e)
+        {
+            if (!CheckSwitchOptions()) return;
+            var frm = new ProjectSettings(ProjectPathBox.Text);
+            frm.ShowDialog();
+        }
+
+        private bool CheckSwitchOptions()
+        {
+            var fpath = Path.GetDirectoryName(ProjectPathBox.Text) + Path.DirectorySeparatorChar + "options" + Path.DirectorySeparatorChar + "switch" + Path.DirectorySeparatorChar;
+            if (!Directory.Exists(fpath))
+            {
+                var ret = MessageBox.Show("Your project doesn't seem to have Switch options generated.\nWould you like to generate them?\n(WARNING: DON'T FORGET TO BACKUP YOUR PROJECT BEFORE CLICKING YES!)", "Uh, hm...", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (ret == DialogResult.Yes)
+                {
+                    Directory.CreateDirectory(fpath);
+
+                    // Write .yy file from Embedded Resources.
+                    var fpath2 = fpath + "options_switch.yy";
+                    var r = new ResourceManager(this.GetType());
+                    byte[] b = (byte[])r.GetObject("options_switch"); // embedded resources don't have extensions.
+                    File.WriteAllBytes(fpath2, b);
+
+                    // Modify root .yyp
+                    List<string> bigProj = ReadAllList(ProjectPathBox.Text);
+                    var resGuid = Guid.NewGuid();
+                    int windowsLineInd = bigProj.IndexOf(bigProj.Where(l => l.Contains("\"resourceType\": \"GMWindowsOptions\"")).First());
+                    windowsLineInd += 2; // skip "}" and "},"
+
+                    // construct GMSwitchOptions entry.
+                    bigProj.Insert(++windowsLineInd, "        {");
+                    bigProj.Insert(++windowsLineInd, "            \"Key\": \"3a5af38c-757d-41ae-98c0-5d4b09e14e6a\",");
+                    bigProj.Insert(++windowsLineInd, "            \"Value\": {");
+                    bigProj.Insert(++windowsLineInd, $"                \"id\": \"{resGuid}\",");
+                    bigProj.Insert(++windowsLineInd, @"                ""resourcePath"": ""options\\switch\\options_switch.yy"",");
+                    bigProj.Insert(++windowsLineInd, "                \"resourceType\": \"GMSwitchOptions\"");
+                    bigProj.Insert(++windowsLineInd, "            }");
+                    bigProj.Insert(++windowsLineInd, "        },");
+
+                    File.Copy(ProjectPathBox.Text, ProjectPathBox.Text + ".rnxbk");
+                    File.WriteAllLines(ProjectPathBox.Text, ListToArray(bigProj), Encoding.UTF8);
+                    prnt("Backed up .yyp as " + ProjectPathBox.Text + ".rnxbk (if something had gone wrong, delete broken .yyp and remove .rnxbk extension.");
+                    prnt("Switch settings generated!");
+                }
+                else return false;
+            }
+
+            return true;
+        }
+
+        private List<string> ReadAllList(string filePath)
+        {
+            var array = File.ReadAllLines(filePath, Encoding.UTF8);
+            var list = new List<string>();
+            for (int i = 0; i < array.Length; i++)
+                list.Add(array[i]);
+
+            return list;
+        }
+
+        private string[] ListToArray(List<string> list)
+        {
+            string[] ret = new string[list.Count];
+            for (int i = 0; i < ret.Length; i++)
+                ret[i] = list[i];
+
+            return ret;
+        }
+
+        private void ExportLogBtn_Click(object sender, EventArgs e)
+        {
+            var dialog = new SaveFileDialog();
+            dialog.DefaultExt = ".log";
+            dialog.InitialDirectory = AppDir;
+            dialog.AddExtension = true;
+            dialog.Title = "Choose where to save the log.";
+            dialog.Filter = "Log files (*.log)|*.log";
+            Stream myStream;
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                if ((myStream = dialog.OpenFile()) != null)
+                {
+                    byte[] to_write = Encoding.UTF8.GetBytes(LogText);
+                    myStream.Write(to_write, 0, to_write.Length);
+                    myStream.Close();
+                    prnt("Log has been saved.");
+                }
+            }
+        }
+
+        private void CleanLogBtn_Click(object sender, EventArgs e)
+        {
+            prnt("$LOG_CLEAN");
         }
     }
 }
