@@ -1,4 +1,7 @@
 # RussellNX
+
+![Banner](https://raw.githubusercontent.com/nkrapivin/RussellNX/master/banner.png)
+
 A tool to build Nintendo Switch homebrew games using GameMaker Studio 2's runtime.
 
 If you have no idea how to use `switch_` GMS 2 functions, feel free to visit the [RussellNX Wiki.](https://github.com/nkrapivin/RussellNX/wiki) (no NDA or devkit required)
