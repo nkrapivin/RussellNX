@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Resources;
 using System.Linq;
+using System.Globalization;
 
 namespace RussellNX
 {
@@ -21,10 +22,12 @@ namespace RussellNX
     {
         public static string AppDir = AppDomain.CurrentDomain.BaseDirectory;
         public static string RuntimeVersion = "2.2.3.344";
+
+        // mhmm...... can we somehow make it Windows & macOS friendly instead of Windows only?
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
         public static string GameIconPath = AppDir + "default_icon.jpg";
-        public static string RNXVersionString = "1.3.5";
+        public static string RNXVersionString = "1.3.6";
         public static string LogText = "";
         public static int BuildState = 0;
         public static int StringsCount = 0;
@@ -32,6 +35,11 @@ namespace RussellNX
         public MainForm()
         {
             InitializeComponent();
+            ApplyLocalisation();
+
+            var ci = CultureInfo.CurrentUICulture.Name;
+            string errStr = "ERROR!\nYour current RussellNX directory doesn't have Read Write permissions.\nPlease move RussellNX to Desktop, Documents, Downloads heck, anywhere else!\n\nException: ";
+            if (ci == "ru-RU") errStr = "ОШИБКА!\nRussellNX не имеет прав на чтение/запись в папке в которую вы его распаковали, переместите RussellNX в другое место. Детали: ";
 
             //Check for write access first.
             try
@@ -41,7 +49,7 @@ namespace RussellNX
             catch (Exception e)
             {
                 //for some reason this messagebox doesn't wanna show up (??)
-                MessageBox.Show("ERROR!\nYour current RussellNX directory doesn't have Read Write permissions.\nPlease move RussellNX to Desktop, Documents, Downloads heck, anywhere else!\n\nException: " + e.ToString(), "Idiot Check Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(errStr + e.ToString(), "Idiot Check Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
                 return;
             }
@@ -89,7 +97,7 @@ namespace RussellNX
             else LoadSettings();
 
             //Set version label
-            RNXVersionLabel.Text = "RussellNX Version: " + RNXVersionString;
+            RNXVersionLabel.Text = RNXVersionLabel.Text.Replace("0.0.0", RNXVersionString);
 
             if (!File.Exists(GameIconPath))
             {
@@ -104,15 +112,17 @@ namespace RussellNX
 
             //Check for 2.2.3.344 Runtime
             //other runtimes maybe later idk...
+            string runStr = "ERROR!\nCannot find runtime. This error is not fatal and can happen if you only have the latest runtime.\nYou can download RussellNX's recommended runtime GMS 2 in File->Preferences->Runtime Feeds->Master (the tool is using 2.2.3.344 as default)";
+            if (ci == "ru-RU") runStr = "ОШИБКА!\nНе могу найти рантайм. Ошибка не фатальная и просто значит что рантайм не установлен.\nВы сможете поменять версию рантайма в программе или можете скачать рекоммендуемый рантайм 2.2.3.344 в GMS 2.";
             if (!File.Exists(RuntimePath + "\\bin\\GMAssetCompiler.exe"))
             {
-                MessageBox.Show("ERROR!\nCannot find runtime. This error is not fatal and can happen if you only have the latest runtime.\nYou can download RussellNX's recommended runtime GMS 2 in File->Preferences->Runtime Feeds->Master (the tool is using 2.2.3.344 as default)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(runStr, "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             //Cleanup temp dirs
             try
             {
-                for (int i = 1000; i < 9999; i++)
+                for (int i = 1000; i <= 9999; i++)
                 {
                     if (Directory.Exists(AppDir + "TEMPDIR" + i.ToString()))
                         Directory.Delete(AppDir + "TEMPDIR" + i.ToString(), true);
@@ -123,7 +133,9 @@ namespace RussellNX
             //Check for keys.txt here
             if (!File.Exists(KeysBox.Text))
             {
-                MessageBox.Show("Please specify your Switch keys file after clicking OK", "No keys file specified!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string keyStr = "Please specify your Switch keys file after clicking OK";
+                if (ci == "ru-RU") keyStr = "Пожалуйста выберите файл с ключами от свитча после нажатия ОК";
+                MessageBox.Show(keyStr, "No keys file specified!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 OpenFileDialog KeysChooseDialog = new OpenFileDialog();
                 KeysChooseDialog.Filter = "All Files|*.*";
 
@@ -138,7 +150,11 @@ namespace RussellNX
 
         private void IconChooseBtn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Your icon must be a JPEG (.jpg) 256x256 image!", "Icon format message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var ci = CultureInfo.CurrentUICulture.Name;
+            string iconStr = "Your icon must be a JPEG (.jpg) 256x256 image!";
+            if (ci == "ru-RU") iconStr = "Ваша иконка должна быть жыпег картинкой с разрешением 256 на 256!";
+
+            MessageBox.Show(iconStr, "Icon format message", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             OpenFileDialog IconChooseDialog = new OpenFileDialog();
             IconChooseDialog.Filter = "JPEG Icon (*.jpg)|*.jpg";
@@ -213,6 +229,43 @@ namespace RussellNX
                     string temppath = Path.Combine(destDirName, subdir.Name);
                     DirectoryCopy(subdir.FullName, temppath, copySubDirs);
                 }
+            }
+        }
+
+        private void ApplyLocalisation()
+        {
+            var ci = CultureInfo.CurrentUICulture.Name;
+            if (ci == "ru-RU")
+            {
+                prnt("Применяю русские строки...");
+
+                IconLabel.Text = "Иконка (жыпег):";
+                IconChooseBtn.Text = "Выбрать другую иконку...";
+                RuntimeLabelBox.Text = "Рантайм:";
+                AdvancedOptionsLabel.Text = "Расширенные настройки:";
+                StartupAccCheckbox.Text = "Требовать выбора аккаунта перед запуском игры?";
+                DataLossCheckbox.Text = "Показывать окно о возможной потере данных перед выходом?";
+                LanguagesLabel.Text = "Поддерживаемые языки:";
+                aengCheckbox.Text = "Американский Английский";
+                freCheckbox.Text = "Французский";
+                spaCheckbox.Text = "Испанский";
+                itaCheckbox.Text = "Итальянский";
+                rusCheckbox.Text = "Русский";
+                dutCheckbox.Text = "Нидерландский";
+                porCheckbox.Text = "Португальский";
+                gerCheckbox.Text = "Немецкий";
+                LogTitle.Text = "Лог:";
+                ProjectPathLabel.Text = "Файл проекта:";
+                GameNameLabel.Text = "Имя игры:";
+                AuthorLabel.Text = "Автор(ы) игры:";
+                VersionLabel.Text = "Версия игры:";
+                KeysLabel.Text = "Путь к ключам шифрования сыча (prod.keys, keys.dat, keys.txt):";
+                ProjectSettingsBtn.Text = "Настройки проекта...";
+                RNXVersionLabel.Text = "Версия RussellNX: 0.0.0";
+                this.Text = "RussellNX : Главное меню.";
+                BuildButton.Text = "Собрать .NSP!";
+                CleanLogBtn.Text = "Очистить лог";
+                ExportLogBtn.Text = "Сохранить лог";
             }
         }
 
@@ -657,7 +710,11 @@ namespace RussellNX
             var fpath = Path.GetDirectoryName(ProjectPathBox.Text) + Path.DirectorySeparatorChar + "options" + Path.DirectorySeparatorChar + "switch" + Path.DirectorySeparatorChar;
             if (!Directory.Exists(fpath))
             {
-                var ret = MessageBox.Show("Your project doesn't seem to have Switch options generated.\nWould you like to generate them?\n(WARNING: DON'T FORGET TO BACKUP YOUR PROJECT BEFORE CLICKING YES!)", "Uh, hm...", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var ci = CultureInfo.CurrentUICulture.Name;
+                string nxName = "Your project doesn't seem to have Switch options generated.\nWould you like to generate them?\n(WARNING: DON'T FORGET TO BACKUP YOUR PROJECT BEFORE CLICKING YES!)";
+                if (ci == "ru-RU") nxName = "Ой ой. В вашем проекте не сгенерирован файл настроек свитча. (это нормально если вы не используйте крякнутый гмс2)\nХотите я попробую его сгенерировать? (советую вам сделать бэкап а то хер его знает)";
+
+                var ret = MessageBox.Show(nxName, "Uh, hm...", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (ret == DialogResult.Yes)
                 {
                     Directory.CreateDirectory(fpath);

@@ -55,7 +55,7 @@
             this.AdvancedOptionsLabel = new System.Windows.Forms.Label();
             this.StartupAccCheckbox = new System.Windows.Forms.CheckBox();
             this.DataLossCheckbox = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.LanguagesLabel = new System.Windows.Forms.Label();
             this.aengCheckbox = new System.Windows.Forms.CheckBox();
             this.freCheckbox = new System.Windows.Forms.CheckBox();
             this.spaCheckbox = new System.Windows.Forms.CheckBox();
@@ -173,7 +173,7 @@
             // IconLabel
             // 
             this.IconLabel.AutoSize = true;
-            this.IconLabel.Location = new System.Drawing.Point(12, 60);
+            this.IconLabel.Location = new System.Drawing.Point(9, 52);
             this.IconLabel.Name = "IconLabel";
             this.IconLabel.Size = new System.Drawing.Size(60, 13);
             this.IconLabel.TabIndex = 11;
@@ -192,9 +192,9 @@
             // 
             // IconChooseBtn
             // 
-            this.IconChooseBtn.Location = new System.Drawing.Point(131, 47);
+            this.IconChooseBtn.Location = new System.Drawing.Point(104, 47);
             this.IconChooseBtn.Name = "IconChooseBtn";
-            this.IconChooseBtn.Size = new System.Drawing.Size(137, 23);
+            this.IconChooseBtn.Size = new System.Drawing.Size(164, 23);
             this.IconChooseBtn.TabIndex = 14;
             this.IconChooseBtn.Text = "Select another icon...";
             this.IconChooseBtn.UseVisualStyleBackColor = true;
@@ -331,14 +331,14 @@
             this.DataLossCheckbox.Text = "Show Data Loss dialog when exiting Game?";
             this.DataLossCheckbox.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // LanguagesLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(274, 167);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(115, 13);
-            this.label1.TabIndex = 29;
-            this.label1.Text = "Supported Languages:";
+            this.LanguagesLabel.AutoSize = true;
+            this.LanguagesLabel.Location = new System.Drawing.Point(274, 167);
+            this.LanguagesLabel.Name = "LanguagesLabel";
+            this.LanguagesLabel.Size = new System.Drawing.Size(115, 13);
+            this.LanguagesLabel.TabIndex = 29;
+            this.LanguagesLabel.Text = "Supported Languages:";
             // 
             // aengCheckbox
             // 
@@ -427,7 +427,7 @@
             // 
             this.ProjectSettingsBtn.Location = new System.Drawing.Point(700, 322);
             this.ProjectSettingsBtn.Name = "ProjectSettingsBtn";
-            this.ProjectSettingsBtn.Size = new System.Drawing.Size(97, 23);
+            this.ProjectSettingsBtn.Size = new System.Drawing.Size(167, 23);
             this.ProjectSettingsBtn.TabIndex = 38;
             this.ProjectSettingsBtn.Text = "Project settings...";
             this.ProjectSettingsBtn.UseVisualStyleBackColor = true;
@@ -437,7 +437,7 @@
             // 
             this.ExportLogBtn.Location = new System.Drawing.Point(12, 649);
             this.ExportLogBtn.Name = "ExportLogBtn";
-            this.ExportLogBtn.Size = new System.Drawing.Size(86, 23);
+            this.ExportLogBtn.Size = new System.Drawing.Size(121, 23);
             this.ExportLogBtn.TabIndex = 39;
             this.ExportLogBtn.Text = "Export log";
             this.ExportLogBtn.UseVisualStyleBackColor = true;
@@ -445,9 +445,9 @@
             // 
             // CleanLogBtn
             // 
-            this.CleanLogBtn.Location = new System.Drawing.Point(104, 649);
+            this.CleanLogBtn.Location = new System.Drawing.Point(139, 649);
             this.CleanLogBtn.Name = "CleanLogBtn";
-            this.CleanLogBtn.Size = new System.Drawing.Size(75, 23);
+            this.CleanLogBtn.Size = new System.Drawing.Size(117, 23);
             this.CleanLogBtn.TabIndex = 40;
             this.CleanLogBtn.Text = "Clean log";
             this.CleanLogBtn.UseVisualStyleBackColor = true;
@@ -469,7 +469,7 @@
             this.Controls.Add(this.spaCheckbox);
             this.Controls.Add(this.freCheckbox);
             this.Controls.Add(this.aengCheckbox);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.LanguagesLabel);
             this.Controls.Add(this.DataLossCheckbox);
             this.Controls.Add(this.StartupAccCheckbox);
             this.Controls.Add(this.AdvancedOptionsLabel);
@@ -537,7 +537,7 @@
         private System.Windows.Forms.Label AdvancedOptionsLabel;
         private System.Windows.Forms.CheckBox StartupAccCheckbox;
         private System.Windows.Forms.CheckBox DataLossCheckbox;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label LanguagesLabel;
         private System.Windows.Forms.CheckBox aengCheckbox;
         private System.Windows.Forms.CheckBox freCheckbox;
         private System.Windows.Forms.CheckBox spaCheckbox;

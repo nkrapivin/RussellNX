@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -25,6 +26,28 @@ namespace RussellNX
         public ProjectSettings()
         {
             InitializeComponent();
+            ApplyLocalisation();
+        }
+
+        public void ApplyLocalisation()
+        {
+            var ci = CultureInfo.CurrentUICulture.Name;
+            if (ci == "ru-RU")
+            {
+                MainLabel.Text = "Свитч настройки проекта:";
+                checkNSPPublish.Text = "Проверять проект на ошибки паблишинга? (бесполезно в RussellNX)";
+                checkNEXLibs.Text = "Использовать NEX библиотеки? (нужен NEX SDK, бесполезно в RussellNX)";
+                checkFileAccessLog.Text = "Логировать доступ к файлам на сд карту? (фиг знает чо ита)";
+                checkInterpolation.Text = "Включить интерполяцию пикселей?";
+                labelScaling.Text = "Режим растягивания картинки игры:";
+                radioFullScale.Text = "Без подстройки";
+                radioKeepAspect.Text = "Подстраивать под соотношение сторон";
+                labelTPage.Text = "Максимальный размер текстурной страницы:";
+                labelNmetaPath.Text = "Путь к .nmeta:";
+                labelRndQuote.Text = "рандомная цитата: ";
+                SaveSettingsBtn.Text = "Сохранить и выйти.";
+                this.Text = "RussellNX: Настройки проекта.";
+            }
         }
 
         public ProjectSettings(string projpath) : this()
@@ -94,19 +117,40 @@ namespace RussellNX
 
         private string GenRndQuote()
         {
-            string[] quotes =
+            string[] quotes;
+            var ci = CultureInfo.CurrentUICulture.Name;
+            if (ci == "ru-RU")
             {
-                "If you feel tired, go outside for a walk.",
-                "May contain piracy.",
-                "2.3 support wen",
-                "animals r cute",
-                "why do I suck at making UI design?",
-                "remember to take a break every 30 minutes.",
-                "JSON ABOVE ALL!!@@@!!!!!11111one",
-                "Stay safe, stay home.",
-                "australia's fake lmao",
-                "lojical sucks"
-            };
+                quotes = new string[]
+                {
+                    "не застревать в текстурах",
+                    "лучше дома",
+                    "мяу",
+                    "украинские котохакеры бдят",
+                    "гав?",
+                    "всем привет",
+                    "покупайте деньги",
+                    "Ешь вода, пей вода, не будешь срать ты никогда!",
+                    "памагите лампачка гарит"
+                };
+            }
+            else
+            {
+                quotes = new string[]
+                {
+                    "If you feel tired, go outside for a walk.",
+                    "May contain piracy.",
+                    "2.3 support wen",
+                    "animals r cute",
+                    "why do I suck at making UI design?",
+                    "remember to take a break every 30 minutes.",
+                    "JSON ABOVE ALL!!@@@!!!!!11111one",
+                    "Stay safe, stay home.",
+                    "australia's fake lmao",
+                    "lojical sucks"
+                };
+            }
+
 
             return quotes[new Random().Next(0, quotes.Length - 1)];
         }

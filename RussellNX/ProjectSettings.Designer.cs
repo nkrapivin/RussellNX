@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectSettings));
             this.MainLabel = new System.Windows.Forms.Label();
             this.checkNSPPublish = new System.Windows.Forms.CheckBox();
             this.checkFileAccessLog = new System.Windows.Forms.CheckBox();
@@ -47,7 +48,7 @@
             // MainLabel
             // 
             this.MainLabel.AutoSize = true;
-            this.MainLabel.Location = new System.Drawing.Point(13, 13);
+            this.MainLabel.Location = new System.Drawing.Point(11, 9);
             this.MainLabel.Name = "MainLabel";
             this.MainLabel.Size = new System.Drawing.Size(125, 13);
             this.MainLabel.TabIndex = 0;
@@ -137,9 +138,9 @@
             // 
             // SaveSettingsBtn
             // 
-            this.SaveSettingsBtn.Location = new System.Drawing.Point(336, 228);
+            this.SaveSettingsBtn.Location = new System.Drawing.Point(305, 228);
             this.SaveSettingsBtn.Name = "SaveSettingsBtn";
-            this.SaveSettingsBtn.Size = new System.Drawing.Size(89, 23);
+            this.SaveSettingsBtn.Size = new System.Drawing.Size(120, 23);
             this.SaveSettingsBtn.TabIndex = 9;
             this.SaveSettingsBtn.Text = "Save and quit";
             this.SaveSettingsBtn.UseVisualStyleBackColor = true;
@@ -157,7 +158,7 @@
             "4096x4096",
             "8192x8192",
             "16384x16384"});
-            this.comboTPageSize.Location = new System.Drawing.Point(154, 174);
+            this.comboTPageSize.Location = new System.Drawing.Point(253, 174);
             this.comboTPageSize.Name = "comboTPageSize";
             this.comboTPageSize.Size = new System.Drawing.Size(172, 21);
             this.comboTPageSize.TabIndex = 10;
@@ -165,7 +166,7 @@
             // labelRndQuote
             // 
             this.labelRndQuote.AutoSize = true;
-            this.labelRndQuote.Location = new System.Drawing.Point(13, 238);
+            this.labelRndQuote.Location = new System.Drawing.Point(11, 233);
             this.labelRndQuote.Name = "labelRndQuote";
             this.labelRndQuote.Size = new System.Drawing.Size(78, 13);
             this.labelRndQuote.TabIndex = 11;
@@ -183,7 +184,7 @@
             // textBoxNmeta
             // 
             this.textBoxNmeta.Enabled = false;
-            this.textBoxNmeta.Location = new System.Drawing.Point(83, 201);
+            this.textBoxNmeta.Location = new System.Drawing.Point(182, 201);
             this.textBoxNmeta.Name = "textBoxNmeta";
             this.textBoxNmeta.Size = new System.Drawing.Size(243, 20);
             this.textBoxNmeta.TabIndex = 13;
@@ -208,6 +209,7 @@
             this.Controls.Add(this.checkFileAccessLog);
             this.Controls.Add(this.checkNSPPublish);
             this.Controls.Add(this.MainLabel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(453, 302);
             this.MinimizeBox = false;
