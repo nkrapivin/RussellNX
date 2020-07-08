@@ -34,12 +34,12 @@ namespace RussellNX
             var ci = CultureInfo.CurrentUICulture.Name;
             if (ci == "ru-RU")
             {
-                MainLabel.Text = "Свитч настройки проекта:";
+                groupBox1.Text = "Свитч настройки проекта";
                 checkNSPPublish.Text = "Проверять проект на ошибки паблишинга? (бесполезно в RussellNX)";
                 checkNEXLibs.Text = "Использовать NEX библиотеки? (нужен NEX SDK, бесполезно в RussellNX)";
                 checkFileAccessLog.Text = "Логировать доступ к файлам на сд карту? (фиг знает чо ита)";
-                checkInterpolation.Text = "Включить интерполяцию пикселей?";
-                labelScaling.Text = "Режим растягивания картинки игры:";
+                checkInterpolation.Text = "Включить интерполяцию пикселей? (если включено, и разрешение меньше свитчевого, будет мыло!)";
+                groupBox2.Text = "Режим растягивания картинки игры";
                 radioFullScale.Text = "Без подстройки";
                 radioKeepAspect.Text = "Подстраивать под соотношение сторон";
                 labelTPage.Text = "Максимальный размер текстурной страницы:";
@@ -59,7 +59,7 @@ namespace RussellNX
 
         public void ParseFile(string path)
         {
-            // Yes, I know that this is ugly. But this way we don't have to rely on JSON libraries.
+            // Yes, I know that this is ugly. But this way we don't have to rely on JSON libraries!!!!
 
             string[] settings = File.ReadAllLines(path);
             checkNSPPublish.Checked = settings[5].Replace("    \"option_switch_check_nsp_publish_errors\": ", string.Empty) == "true,";
@@ -131,7 +131,9 @@ namespace RussellNX
                     "всем привет",
                     "покупайте деньги",
                     "Ешь вода, пей вода, не будешь срать ты никогда!",
-                    "памагите лампачка гарит"
+                    "памагите лампачка гарит",
+                    "акакой взламать вайфай",
+                    "е-батюшка - исповедование онлайн!"
                 };
             }
             else
@@ -147,7 +149,8 @@ namespace RussellNX
                     "JSON ABOVE ALL!!@@@!!!!!11111one",
                     "Stay safe, stay home.",
                     "australia's fake lmao",
-                    "lojical sucks"
+                    "lojemiru sucks",
+                    "blini, truly the yummiest of dishes." // <-- approved by blini gang.
                 };
             }
 

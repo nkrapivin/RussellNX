@@ -29,12 +29,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectSettings));
-            this.MainLabel = new System.Windows.Forms.Label();
             this.checkNSPPublish = new System.Windows.Forms.CheckBox();
             this.checkFileAccessLog = new System.Windows.Forms.CheckBox();
             this.checkNEXLibs = new System.Windows.Forms.CheckBox();
             this.checkInterpolation = new System.Windows.Forms.CheckBox();
-            this.labelScaling = new System.Windows.Forms.Label();
             this.radioKeepAspect = new System.Windows.Forms.RadioButton();
             this.radioFullScale = new System.Windows.Forms.RadioButton();
             this.labelTPage = new System.Windows.Forms.Label();
@@ -43,21 +41,16 @@
             this.labelRndQuote = new System.Windows.Forms.Label();
             this.labelNmetaPath = new System.Windows.Forms.Label();
             this.textBoxNmeta = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // MainLabel
-            // 
-            this.MainLabel.AutoSize = true;
-            this.MainLabel.Location = new System.Drawing.Point(11, 9);
-            this.MainLabel.Name = "MainLabel";
-            this.MainLabel.Size = new System.Drawing.Size(125, 13);
-            this.MainLabel.TabIndex = 0;
-            this.MainLabel.Text = "Project Settings (Switch):";
             // 
             // checkNSPPublish
             // 
             this.checkNSPPublish.AutoSize = true;
-            this.checkNSPPublish.Location = new System.Drawing.Point(16, 29);
+            this.checkNSPPublish.Location = new System.Drawing.Point(6, 23);
             this.checkNSPPublish.Name = "checkNSPPublish";
             this.checkNSPPublish.Size = new System.Drawing.Size(263, 17);
             this.checkNSPPublish.TabIndex = 1;
@@ -67,7 +60,7 @@
             // checkFileAccessLog
             // 
             this.checkFileAccessLog.AutoSize = true;
-            this.checkFileAccessLog.Location = new System.Drawing.Point(16, 52);
+            this.checkFileAccessLog.Location = new System.Drawing.Point(6, 46);
             this.checkFileAccessLog.Name = "checkFileAccessLog";
             this.checkFileAccessLog.Size = new System.Drawing.Size(207, 17);
             this.checkFileAccessLog.TabIndex = 2;
@@ -77,7 +70,7 @@
             // checkNEXLibs
             // 
             this.checkNEXLibs.AutoSize = true;
-            this.checkNEXLibs.Location = new System.Drawing.Point(16, 75);
+            this.checkNEXLibs.Location = new System.Drawing.Point(6, 92);
             this.checkNEXLibs.Name = "checkNEXLibs";
             this.checkNEXLibs.Size = new System.Drawing.Size(398, 17);
             this.checkNEXLibs.TabIndex = 3;
@@ -89,27 +82,18 @@
             this.checkInterpolation.AutoSize = true;
             this.checkInterpolation.Checked = true;
             this.checkInterpolation.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkInterpolation.Location = new System.Drawing.Point(16, 98);
+            this.checkInterpolation.Location = new System.Drawing.Point(6, 69);
             this.checkInterpolation.Name = "checkInterpolation";
             this.checkInterpolation.Size = new System.Drawing.Size(310, 17);
             this.checkInterpolation.TabIndex = 4;
             this.checkInterpolation.Text = "Interpolate colors between pixels. (Disable for crisp graphics)";
             this.checkInterpolation.UseVisualStyleBackColor = true;
             // 
-            // labelScaling
-            // 
-            this.labelScaling.AutoSize = true;
-            this.labelScaling.Location = new System.Drawing.Point(11, 118);
-            this.labelScaling.Name = "labelScaling";
-            this.labelScaling.Size = new System.Drawing.Size(74, 13);
-            this.labelScaling.TabIndex = 5;
-            this.labelScaling.Text = "Scaling mode:";
-            // 
             // radioKeepAspect
             // 
             this.radioKeepAspect.AutoSize = true;
             this.radioKeepAspect.Checked = true;
-            this.radioKeepAspect.Location = new System.Drawing.Point(16, 134);
+            this.radioKeepAspect.Location = new System.Drawing.Point(6, 42);
             this.radioKeepAspect.Name = "radioKeepAspect";
             this.radioKeepAspect.Size = new System.Drawing.Size(108, 17);
             this.radioKeepAspect.TabIndex = 6;
@@ -120,7 +104,7 @@
             // radioFullScale
             // 
             this.radioFullScale.AutoSize = true;
-            this.radioFullScale.Location = new System.Drawing.Point(16, 157);
+            this.radioFullScale.Location = new System.Drawing.Point(6, 19);
             this.radioFullScale.Name = "radioFullScale";
             this.radioFullScale.Size = new System.Drawing.Size(69, 17);
             this.radioFullScale.TabIndex = 7;
@@ -129,8 +113,9 @@
             // 
             // labelTPage
             // 
+            this.labelTPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelTPage.AutoSize = true;
-            this.labelTPage.Location = new System.Drawing.Point(11, 177);
+            this.labelTPage.Location = new System.Drawing.Point(9, 232);
             this.labelTPage.Name = "labelTPage";
             this.labelTPage.Size = new System.Drawing.Size(137, 13);
             this.labelTPage.TabIndex = 8;
@@ -138,7 +123,8 @@
             // 
             // SaveSettingsBtn
             // 
-            this.SaveSettingsBtn.Location = new System.Drawing.Point(305, 228);
+            this.SaveSettingsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.SaveSettingsBtn.Location = new System.Drawing.Point(462, 289);
             this.SaveSettingsBtn.Name = "SaveSettingsBtn";
             this.SaveSettingsBtn.Size = new System.Drawing.Size(120, 23);
             this.SaveSettingsBtn.TabIndex = 9;
@@ -148,6 +134,7 @@
             // 
             // comboTPageSize
             // 
+            this.comboTPageSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.comboTPageSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboTPageSize.FormattingEnabled = true;
             this.comboTPageSize.Items.AddRange(new object[] {
@@ -158,15 +145,16 @@
             "4096x4096",
             "8192x8192",
             "16384x16384"});
-            this.comboTPageSize.Location = new System.Drawing.Point(253, 174);
+            this.comboTPageSize.Location = new System.Drawing.Point(257, 229);
             this.comboTPageSize.Name = "comboTPageSize";
-            this.comboTPageSize.Size = new System.Drawing.Size(172, 21);
+            this.comboTPageSize.Size = new System.Drawing.Size(325, 21);
             this.comboTPageSize.TabIndex = 10;
             // 
             // labelRndQuote
             // 
+            this.labelRndQuote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelRndQuote.AutoSize = true;
-            this.labelRndQuote.Location = new System.Drawing.Point(11, 233);
+            this.labelRndQuote.Location = new System.Drawing.Point(9, 294);
             this.labelRndQuote.Name = "labelRndQuote";
             this.labelRndQuote.Size = new System.Drawing.Size(78, 13);
             this.labelRndQuote.TabIndex = 11;
@@ -174,8 +162,9 @@
             // 
             // labelNmetaPath
             // 
+            this.labelNmetaPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelNmetaPath.AutoSize = true;
-            this.labelNmetaPath.Location = new System.Drawing.Point(11, 204);
+            this.labelNmetaPath.Location = new System.Drawing.Point(9, 259);
             this.labelNmetaPath.Name = "labelNmetaPath";
             this.labelNmetaPath.Size = new System.Drawing.Size(66, 13);
             this.labelNmetaPath.TabIndex = 12;
@@ -183,52 +172,76 @@
             // 
             // textBoxNmeta
             // 
+            this.textBoxNmeta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxNmeta.Enabled = false;
-            this.textBoxNmeta.Location = new System.Drawing.Point(182, 201);
+            this.textBoxNmeta.Location = new System.Drawing.Point(257, 256);
             this.textBoxNmeta.Name = "textBoxNmeta";
-            this.textBoxNmeta.Size = new System.Drawing.Size(243, 20);
+            this.textBoxNmeta.Size = new System.Drawing.Size(325, 20);
             this.textBoxNmeta.TabIndex = 13;
             this.textBoxNmeta.Text = "${options_dir}\\/switch\\/application.nmeta";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.checkNSPPublish);
+            this.groupBox1.Controls.Add(this.checkFileAccessLog);
+            this.groupBox1.Controls.Add(this.checkInterpolation);
+            this.groupBox1.Controls.Add(this.checkNEXLibs);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(570, 122);
+            this.groupBox1.TabIndex = 14;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Project Settings (Switch)";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.radioFullScale);
+            this.groupBox2.Controls.Add(this.radioKeepAspect);
+            this.groupBox2.Location = new System.Drawing.Point(12, 140);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(570, 69);
+            this.groupBox2.TabIndex = 15;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Scaling mode";
             // 
             // ProjectSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(437, 263);
+            this.ClientSize = new System.Drawing.Size(594, 321);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.textBoxNmeta);
             this.Controls.Add(this.labelNmetaPath);
             this.Controls.Add(this.labelRndQuote);
             this.Controls.Add(this.comboTPageSize);
             this.Controls.Add(this.SaveSettingsBtn);
             this.Controls.Add(this.labelTPage);
-            this.Controls.Add(this.radioFullScale);
-            this.Controls.Add(this.radioKeepAspect);
-            this.Controls.Add(this.labelScaling);
-            this.Controls.Add(this.checkInterpolation);
-            this.Controls.Add(this.checkNEXLibs);
-            this.Controls.Add(this.checkFileAccessLog);
-            this.Controls.Add(this.checkNSPPublish);
-            this.Controls.Add(this.MainLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(453, 302);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(453, 302);
+            this.MinimumSize = new System.Drawing.Size(610, 360);
             this.Name = "ProjectSettings";
             this.Text = "RussellNX: Project settings.";
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label MainLabel;
         private System.Windows.Forms.CheckBox checkNSPPublish;
         private System.Windows.Forms.CheckBox checkFileAccessLog;
         private System.Windows.Forms.CheckBox checkNEXLibs;
         private System.Windows.Forms.CheckBox checkInterpolation;
-        private System.Windows.Forms.Label labelScaling;
         private System.Windows.Forms.RadioButton radioKeepAspect;
         private System.Windows.Forms.RadioButton radioFullScale;
         private System.Windows.Forms.Label labelTPage;
@@ -237,5 +250,7 @@
         private System.Windows.Forms.Label labelRndQuote;
         private System.Windows.Forms.Label labelNmetaPath;
         private System.Windows.Forms.TextBox textBoxNmeta;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }

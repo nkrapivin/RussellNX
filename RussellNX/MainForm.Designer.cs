@@ -72,7 +72,8 @@
             // 
             // ProjectPathBox
             // 
-            this.ProjectPathBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.ProjectPathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ProjectPathBox.Location = new System.Drawing.Point(700, 79);
             this.ProjectPathBox.Name = "ProjectPathBox";
             this.ProjectPathBox.Size = new System.Drawing.Size(398, 20);
@@ -81,7 +82,8 @@
             // 
             // ProjectPathLabel
             // 
-            this.ProjectPathLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProjectPathLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ProjectPathLabel.AutoSize = true;
             this.ProjectPathLabel.Location = new System.Drawing.Point(697, 60);
             this.ProjectPathLabel.Name = "ProjectPathLabel";
@@ -91,7 +93,8 @@
             // 
             // TitleIDLabel
             // 
-            this.TitleIDLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.TitleIDLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.TitleIDLabel.AutoSize = true;
             this.TitleIDLabel.Location = new System.Drawing.Point(700, 103);
             this.TitleIDLabel.Name = "TitleIDLabel";
@@ -101,7 +104,8 @@
             // 
             // TitleIDBox
             // 
-            this.TitleIDBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.TitleIDBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.TitleIDBox.Location = new System.Drawing.Point(700, 120);
             this.TitleIDBox.MaxLength = 16;
             this.TitleIDBox.Name = "TitleIDBox";
@@ -111,7 +115,8 @@
             // 
             // GameNameLabel
             // 
-            this.GameNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.GameNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.GameNameLabel.AutoSize = true;
             this.GameNameLabel.Location = new System.Drawing.Point(700, 147);
             this.GameNameLabel.Name = "GameNameLabel";
@@ -121,7 +126,8 @@
             // 
             // GameNameBox
             // 
-            this.GameNameBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.GameNameBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.GameNameBox.Location = new System.Drawing.Point(700, 164);
             this.GameNameBox.MaxLength = 126;
             this.GameNameBox.Name = "GameNameBox";
@@ -131,7 +137,8 @@
             // 
             // AuthorLabel
             // 
-            this.AuthorLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.AuthorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.AuthorLabel.AutoSize = true;
             this.AuthorLabel.Location = new System.Drawing.Point(700, 191);
             this.AuthorLabel.Name = "AuthorLabel";
@@ -141,7 +148,8 @@
             // 
             // AuthorBox
             // 
-            this.AuthorBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.AuthorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.AuthorBox.Location = new System.Drawing.Point(700, 208);
             this.AuthorBox.MaxLength = 62;
             this.AuthorBox.Name = "AuthorBox";
@@ -151,7 +159,8 @@
             // 
             // VersionLabel
             // 
-            this.VersionLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.VersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.VersionLabel.AutoSize = true;
             this.VersionLabel.Location = new System.Drawing.Point(700, 235);
             this.VersionLabel.Name = "VersionLabel";
@@ -161,7 +170,8 @@
             // 
             // VersionBox
             // 
-            this.VersionBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.VersionBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.VersionBox.Culture = new System.Globalization.CultureInfo("en-001");
             this.VersionBox.Location = new System.Drawing.Point(700, 251);
             this.VersionBox.Mask = "0.0.0";
@@ -202,7 +212,7 @@
             // 
             // OpenProjectBtn
             // 
-            this.OpenProjectBtn.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.OpenProjectBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.OpenProjectBtn.Location = new System.Drawing.Point(1104, 78);
             this.OpenProjectBtn.Name = "OpenProjectBtn";
             this.OpenProjectBtn.Size = new System.Drawing.Size(24, 21);
@@ -213,7 +223,8 @@
             // 
             // KeysLabel
             // 
-            this.KeysLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.KeysLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.KeysLabel.AutoSize = true;
             this.KeysLabel.Location = new System.Drawing.Point(700, 278);
             this.KeysLabel.Name = "KeysLabel";
@@ -223,7 +234,8 @@
             // 
             // KeysBox
             // 
-            this.KeysBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.KeysBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.KeysBox.Location = new System.Drawing.Point(700, 295);
             this.KeysBox.Name = "KeysBox";
             this.KeysBox.Size = new System.Drawing.Size(398, 20);
@@ -231,7 +243,7 @@
             // 
             // KeysBtn
             // 
-            this.KeysBtn.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.KeysBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.KeysBtn.Location = new System.Drawing.Point(1104, 295);
             this.KeysBtn.Name = "KeysBtn";
             this.KeysBtn.Size = new System.Drawing.Size(24, 20);
@@ -252,7 +264,9 @@
             // 
             // LogBox
             // 
-            this.LogBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.LogBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.LogBox.DetectUrls = false;
             this.LogBox.Location = new System.Drawing.Point(15, 364);
             this.LogBox.Name = "LogBox";
@@ -425,7 +439,10 @@
             // 
             // ProjectSettingsBtn
             // 
-            this.ProjectSettingsBtn.Location = new System.Drawing.Point(700, 322);
+            this.ProjectSettingsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProjectSettingsBtn.Location = new System.Drawing.Point(700, 321);
+            this.ProjectSettingsBtn.MinimumSize = new System.Drawing.Size(167, 23);
             this.ProjectSettingsBtn.Name = "ProjectSettingsBtn";
             this.ProjectSettingsBtn.Size = new System.Drawing.Size(167, 23);
             this.ProjectSettingsBtn.TabIndex = 38;
@@ -435,6 +452,7 @@
             // 
             // ExportLogBtn
             // 
+            this.ExportLogBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ExportLogBtn.Location = new System.Drawing.Point(12, 649);
             this.ExportLogBtn.Name = "ExportLogBtn";
             this.ExportLogBtn.Size = new System.Drawing.Size(121, 23);
@@ -445,6 +463,7 @@
             // 
             // CleanLogBtn
             // 
+            this.CleanLogBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.CleanLogBtn.Location = new System.Drawing.Point(139, 649);
             this.CleanLogBtn.Name = "CleanLogBtn";
             this.CleanLogBtn.Size = new System.Drawing.Size(117, 23);
@@ -498,8 +517,7 @@
             this.Controls.Add(this.ProjectPathBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(1156, 723);
-            this.MinimumSize = new System.Drawing.Size(1156, 723);
+            this.MinimumSize = new System.Drawing.Size(1100, 600);
             this.Name = "MainForm";
             this.Text = "RussellNX: Main form.";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);

@@ -12,9 +12,12 @@ using IniParser.Model;
 using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Text;
-using System.Resources;
+
 using System.Linq;
+
+// le l10n
 using System.Globalization;
+using System.Resources;
 
 namespace RussellNX
 {
@@ -27,8 +30,8 @@ namespace RussellNX
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
         public static string GameIconPath = AppDir + "default_icon.jpg";
-        public static string RNXVersionString = "1.3.6";
-        public static string LogText = "";
+        public static string RNXVersionString = "1.3.7";
+        public static string LogText = ""; // for some reason text in LogBox can get truncated o_O
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
@@ -125,7 +128,13 @@ namespace RussellNX
                 for (int i = 1000; i <= 9999; i++)
                 {
                     if (Directory.Exists(AppDir + "TEMPDIR" + i.ToString()))
-                        Directory.Delete(AppDir + "TEMPDIR" + i.ToString(), true);
+                    {
+                        try
+                        {
+                            Directory.Delete(AppDir + "TEMPDIR" + i.ToString(), true);
+                        }
+                        catch { }
+                    }
                 }
             }
             catch { }
@@ -146,13 +155,24 @@ namespace RussellNX
             }
 
             prnt("RussellNX Version " + RNXVersionString + " is waiting for you, master!");
+
+            // hehe.
+            var rnd = new Random().NextDouble();
+            if (rnd >= 0.5)
+            {
+                if (ci == "ru-RU")
+                    prnt("Не застревать в текстурах!"); // don't get stuck in the textures! (Artur's greeting/quote)
+                else
+                    prnt("Lojemiru sux btw.");
+            }
+
         }
 
         private void IconChooseBtn_Click(object sender, EventArgs e)
         {
             var ci = CultureInfo.CurrentUICulture.Name;
             string iconStr = "Your icon must be a JPEG (.jpg) 256x256 image!";
-            if (ci == "ru-RU") iconStr = "Ваша иконка должна быть жыпег картинкой с разрешением 256 на 256!";
+            if (ci == "ru-RU") iconStr = "Ваша иконка должна быть ЖЫПЕГ картинкой с разрешением 256 на 256!";
 
             MessageBox.Show(iconStr, "Icon format message", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -683,16 +703,16 @@ namespace RussellNX
         {
             if (str == null) return;
             //aengCheckbox.Checked = str.Substring(0, 1) == "1" ? true : false;
-            freCheckbox.Checked = str.Substring(1, 1) == "1" ? true : false;
-            spaCheckbox.Checked = str.Substring(2, 1) == "1" ? true : false;
-            itaCheckbox.Checked = str.Substring(3, 1) == "1" ? true : false;
-            rusCheckbox.Checked = str.Substring(4, 1) == "1" ? true : false;
-            dutCheckbox.Checked = str.Substring(5, 1) == "1" ? true : false;
-            porCheckbox.Checked = str.Substring(6, 1) == "1" ? true : false;
-            gerCheckbox.Checked = str.Substring(7, 1) == "1" ? true : false;
+            freCheckbox.Checked = str.Substring(1, 1) == "1";
+            spaCheckbox.Checked = str.Substring(2, 1) == "1";
+            itaCheckbox.Checked = str.Substring(3, 1) == "1";
+            rusCheckbox.Checked = str.Substring(4, 1) == "1";
+            dutCheckbox.Checked = str.Substring(5, 1) == "1";
+            porCheckbox.Checked = str.Substring(6, 1) == "1";
+            gerCheckbox.Checked = str.Substring(7, 1) == "1";
 
-            DataLossCheckbox.Checked = str.Substring(8, 1) == "1" ? true : false;
-            StartupAccCheckbox.Checked = str.Substring(9, 1) == "1" ? true : false;
+            DataLossCheckbox.Checked = str.Substring(8, 1) == "1";
+            StartupAccCheckbox.Checked = str.Substring(9, 1) == "1";
 
             return;
         }
