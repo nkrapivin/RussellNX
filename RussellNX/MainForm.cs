@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
-using System.Security.Cryptography; //MD5
+using System.Security.Cryptography; //MD5, also yes no PwnieCastle or BouncyCastle is actually used.
 using System.Net;
 
 //INI library
@@ -30,7 +30,7 @@ namespace RussellNX
         public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         public static string FriendlyYYPName = "";
         public static string GameIconPath = AppDir + "default_icon.jpg";
-        public static string RNXVersionString = "1.3.7";
+        public static string RNXVersionString = "1.3.8";
         public static string LogText = ""; // for some reason text in LogBox can get truncated o_O
         public static int BuildState = 0;
         public static int StringsCount = 0;
@@ -38,90 +38,11 @@ namespace RussellNX
         public MainForm()
         {
             InitializeComponent();
-            ApplyLocalisation();
+            CheckForIllegalCrossThreadCalls = false;
+        }
 
-            var ci = CultureInfo.CurrentUICulture.Name;
-            string errStr = "ERROR!\nYour current RussellNX directory doesn't have Read Write permissions.\nPlease move RussellNX to Desktop, Documents, Downloads heck, anywhere else!\n\nException: ";
-            if (ci == "ru-RU") errStr = "ОШИБКА!\nRussellNX не имеет прав на чтение/запись в папке в которую вы его распаковали, переместите RussellNX в другое место. Детали: ";
-
-            //Check for write access first.
-            try
-            {
-                File.WriteAllText(AppDir + "dircheck.txt", "");
-            }
-            catch (Exception e)
-            {
-                //for some reason this messagebox doesn't wanna show up (??)
-                MessageBox.Show(errStr + e.ToString(), "Idiot Check Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(-1);
-                return;
-            }
-            File.Delete(AppDir + "dircheck.txt");
-            //I mean, if this check passed, this file should exist, if check failed, program exits before this line executes.
-
-            //Update check...
-            if (File.Exists(AppDir + "updater.exe")) File.Delete(AppDir + "updater.exe");
-            WebClient Client = new WebClient();
-            bool allFine = true;
-            Version v1, v2;
-            Client.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.BypassCache);
-            try { Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/version", AppDir + "latest"); }
-            catch { allFine = false; }
-            if (allFine)
-            {
-                string verstring = File.ReadAllText(AppDir + "latest");
-                File.Delete(AppDir + "latest");
-                //MessageBox.Show(RNXVersion[1]);
-                v1 = new Version(verstring);
-                v2 = new Version(RNXVersionString);
-                int versionHigher = v1.CompareTo(v2);
-                if (versionHigher > 0)
-                {
-                    DialogResult dialog = MessageBox.Show("A RussellNX update is released!\nYour Version: " + RNXVersionString + "\nNew Version: " + verstring + "\nWould you like to update?\n\nChangelog can be found on GitHub.", "RussellNX: Auto Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                    if (dialog == DialogResult.Yes)
-                    {
-                        Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/updater.exe", AppDir + "updater.exe");
-                        Client.Dispose();
-                        Process.Start(AppDir + "updater.exe");
-                        Environment.Exit(0);
-                        return;
-                    }
-                }
-            }
-
-            if (Debugger.IsAttached) Text += " (Running inside Visual Studio)";
-
-            prnt("WARNING: Installing Custom NSPs may get your Switch banned, be careful!\n");
-
-            if (!File.Exists(AppDir + "RussellNX.ini"))
-            {
-                DefaultSettings();
-            }
-            else LoadSettings();
-
-            //Set version label
-            RNXVersionLabel.Text = RNXVersionLabel.Text.Replace("0.0.0", RNXVersionString);
-
-            if (!File.Exists(GameIconPath))
-            {
-                if (!File.Exists(AppDir + "default_icon.png"))
-                {
-                    Properties.Resources.default_icon.Save(AppDir + "default_icon.png");
-                }
-                GameIconPath = AppDir + "default_icon.png";
-            }
-
-            IconPicBox.Image = new Bitmap(GameIconPath);
-
-            //Check for 2.2.3.344 Runtime
-            //other runtimes maybe later idk...
-            string runStr = "ERROR!\nCannot find runtime. This error is not fatal and can happen if you only have the latest runtime.\nYou can download RussellNX's recommended runtime GMS 2 in File->Preferences->Runtime Feeds->Master (the tool is using 2.2.3.344 as default)";
-            if (ci == "ru-RU") runStr = "ОШИБКА!\nНе могу найти рантайм. Ошибка не фатальная и просто значит что рантайм не установлен.\nВы сможете поменять версию рантайма в программе или можете скачать рекоммендуемый рантайм 2.2.3.344 в GMS 2.";
-            if (!File.Exists(RuntimePath + "\\bin\\GMAssetCompiler.exe"))
-            {
-                MessageBox.Show(runStr, "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
+        private void CleanupTempDirs()
+        {
             //Cleanup temp dirs
             try
             {
@@ -138,6 +59,10 @@ namespace RussellNX
                 }
             }
             catch { }
+        }
+
+        private void CheckForKeys(string ci)
+        {
 
             //Check for keys.txt here
             if (!File.Exists(KeysBox.Text))
@@ -153,9 +78,10 @@ namespace RussellNX
                     KeysBox.Text = KeysChooseDialog.FileName;
                 }
             }
+        }
 
-            prnt("RussellNX Version " + RNXVersionString + " is waiting for you, master!");
-
+        private void RandomQuotePrint(string ci)
+        {
             // hehe.
             var rnd = new Random().NextDouble();
             if (rnd >= 0.5)
@@ -166,6 +92,7 @@ namespace RussellNX
                     prnt("Lojemiru sux btw.");
             }
 
+            if (Debugger.IsAttached) Text += " (Running inside Visual Studio)";
         }
 
         private void IconChooseBtn_Click(object sender, EventArgs e)
@@ -291,8 +218,6 @@ namespace RussellNX
 
         private void prnt(string log)
         {
-            CheckForIllegalCrossThreadCalls = false;
-
             //Special command that cleans the LogBox.
             if (log == "$LOG_CLEAN") { LogText = ""; StringsCount = 0; }
             else LogText += log + "\n"; //Append text
@@ -311,7 +236,7 @@ namespace RussellNX
         private bool CheckTitleID()
         {
             string tt = TitleIDBox.Text;
-            if (tt.Length < TitleIDBox.MaxLength || !UInt64.TryParse(tt, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out _))
+            if (tt.Length < TitleIDBox.MaxLength || !UInt64.TryParse(tt, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _))
             {
                 MessageBox.Show("Invalid title ID!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -363,9 +288,10 @@ namespace RussellNX
 
             if (!CheckTitleID()) return;
 
-            //Check for PwnieCastle.Crypto.dll
-            //if (RuntimeVersion != "2.2.3.344") //this version has public_key vuln, newer don't.
-            if (int.Parse(RuntimeVersion.Substring(4, 1)) > 3)
+            // Dear YoYoGames: Don't you ever fucking patch this.
+            // ya hear me? I stole your cat!
+            // I'll be watching...
+            if (int.Parse(RuntimeVersion.Substring(4, 1)) > 3) // if third integer in runtime version is >3 (newer than 2.2.3)
             {
                 string hash = "";
                 using (var md5 = MD5.Create())
@@ -618,6 +544,7 @@ namespace RussellNX
             prnt("RuntimePath: " + RuntimePath);
             prnt("Loaded!");
         }
+
         private void SaveSettings()
         {
             var parser = new FileIniDataParser();
@@ -635,6 +562,7 @@ namespace RussellNX
             parser.WriteFile(AppDir + "RussellNX.ini", data);
             prnt("Saved!");
         }
+
         private void DefaultSettings()
         {
             //Migrate KeysFilePath 1.0 config
@@ -728,7 +656,7 @@ namespace RussellNX
         private bool CheckSwitchOptions()
         {
             var fpath = Path.GetDirectoryName(ProjectPathBox.Text) + Path.DirectorySeparatorChar + "options" + Path.DirectorySeparatorChar + "switch" + Path.DirectorySeparatorChar;
-            if (!Directory.Exists(fpath))
+            if (!File.Exists(fpath + "options_switch.yy"))
             {
                 var ci = CultureInfo.CurrentUICulture.Name;
                 string nxName = "Your project doesn't seem to have Switch options generated.\nWould you like to generate them?\n(WARNING: DON'T FORGET TO BACKUP YOUR PROJECT BEFORE CLICKING YES!)";
@@ -810,11 +738,98 @@ namespace RussellNX
                     prnt("Log has been saved.");
                 }
             }
+            dialog.Dispose();
         }
 
         private void CleanLogBtn_Click(object sender, EventArgs e)
         {
             prnt("$LOG_CLEAN");
+        }
+
+        private void MainForm_Load(object sender, EventArgs _e)
+        {
+            ApplyLocalisation();
+
+            var ci = CultureInfo.CurrentUICulture.Name;
+            string errStr = "ERROR!\nYour current RussellNX directory doesn't have Read Write permissions.\nPlease move RussellNX to Desktop, Documents, Downloads heck, anywhere else!\n\nException: ";
+            if (ci == "ru-RU") errStr = "ОШИБКА!\nRussellNX не имеет прав на чтение/запись в папке в которую вы его распаковали, переместите RussellNX в другое место. Детали: ";
+
+            //Check for write access first.
+            try { File.WriteAllText(AppDir + "dircheck.txt", ""); }
+            catch (Exception e)
+            {
+                //for some reason this messagebox doesn't wanna show up (??)
+                MessageBox.Show(errStr + e.ToString(), "Idiot Check Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(-1);
+            }
+            File.Delete(AppDir + "dircheck.txt");
+            //I mean, if this check passed, this file should exist, if check failed, program exits before this line executes.
+
+            //Update check...
+            if (File.Exists(AppDir + "updater.exe")) File.Delete(AppDir + "updater.exe");
+            WebClient Client = new WebClient();
+            bool allFine = true;
+            Version v1, v2;
+            Client.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.BypassCache);
+
+            // try to get the latest version.
+            try { Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/version", AppDir + "latest"); }
+            catch { allFine = false; }
+
+            // if got the version correctly.
+            if (allFine)
+            {
+                string verstring = File.ReadAllText(AppDir + "latest");
+                File.Delete(AppDir + "latest");
+                v1 = new Version(verstring);
+                v2 = new Version(RNXVersionString);
+                int versionHigher = v1.CompareTo(v2);
+                if (versionHigher > 0)
+                {
+                    DialogResult dialog = MessageBox.Show("A RussellNX update is released!\nYour Version: " + RNXVersionString + "\nNew Version: " + verstring + "\nWould you like to update?\n\nChangelog can be found on GitHub.", "RussellNX: Auto Updater", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if (dialog == DialogResult.Yes)
+                    {
+                        // you can look at the updater source in ILSpy.
+                        Client.DownloadFile("https://raw.githubusercontent.com/nkrapivin/rnxupddata/master/updater.exe", AppDir + "updater.exe");
+                        Client.Dispose();
+                        Process.Start(AppDir + "updater.exe");
+                        Environment.Exit(0); // we update here... quit!
+                        return;
+                    }
+                }
+            }
+
+            prnt("WARNING: Installing Custom NSPs may get your Switch banned, be careful!\n");
+
+            if (!File.Exists(AppDir + "RussellNX.ini")) DefaultSettings(); else LoadSettings();
+
+            //Set version label
+            RNXVersionLabel.Text = RNXVersionLabel.Text.Replace("0.0.0", RNXVersionString);
+
+            if (!File.Exists(GameIconPath))
+            {
+                if (!File.Exists(AppDir + "default_icon.png"))
+                {
+                    Properties.Resources.default_icon.Save(AppDir + "default_icon.png");
+                }
+                GameIconPath = AppDir + "default_icon.png";
+            }
+
+            IconPicBox.Image = new Bitmap(GameIconPath);
+
+            //Check for 2.2.3.344 Runtime
+            //other runtimes maybe later idk...
+            string runStr = "ERROR!\nCannot find runtime. This error is not fatal and can happen if you only have the latest runtime.\nYou can download RussellNX's recommended runtime GMS 2 in File->Preferences->Runtime Feeds->Master (the tool is using 2.2.3.344 as default)";
+            if (ci == "ru-RU") runStr = "ОШИБКА!\nНе могу найти рантайм. Ошибка не фатальная и просто значит что рантайм не установлен.\nВы сможете поменять версию рантайма в программе или можете скачать рекоммендуемый рантайм 2.2.3.344 в GMS 2.";
+            if (!File.Exists(RuntimePath + "\\bin\\GMAssetCompiler.exe"))
+            {
+                MessageBox.Show(runStr, "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            CleanupTempDirs();
+            CheckForKeys(ci);
+            RandomQuotePrint(ci);
+            prnt("RussellNX Version " + RNXVersionString + " is waiting for you, master!");
         }
     }
 }
