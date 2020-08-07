@@ -1,28 +1,21 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace RussellNX
 {
     public partial class ProjectSettings : Form
     {
-        private const string SettingsTemplate =
-@"{
-    ""id"": ""3a5af38c-757d-41ae-98c0-5d4b09e14e6a"",
-    ""modelName"": ""GMSwitchOptions"",
-    ""mvc"": ""1.0"",
-    ""name"": ""Switch"",
-    ""option_switch_check_nsp_publish_errors"": {CHECKNSP},
-    ""option_switch_enable_fileaccess_checking"": {FILEACCESS},
-    ""option_switch_enable_nex_libraries"": {NEXLIBS},
-    ""option_switch_interpolate_pixels"": {INTERPOLATE},
-    ""option_switch_project_nmeta"": ""{NMETAPATH}"",
-    ""option_switch_scale"": {SCALE},
-    ""option_switch_texture_page"": ""{TPAGESIZE}""
-}";
-        private static string FilePath = "";
+        private static string FilePath { get; set; }
+        private bool IsNuBeta { get; set; }
+        private string MainlineGuid { get; set; }
+
+
         public ProjectSettings()
         {
             InitializeComponent();
@@ -47,6 +40,9 @@ namespace RussellNX
                 labelRndQuote.Text = "рандомная цитата: ";
                 SaveSettingsBtn.Text = "Сохранить и выйти.";
                 this.Text = "RussellNX: Настройки проекта.";
+                checkUseSplash.Text = "Использовать сплэш? (ТОЛЬКО ДЛЯ 2.3 NUBETA)";
+                buttonViewSplash.Text = "Посмотреть сплэш";
+                buttonChangeSplash.Text = "Изменить сплэш";
             }
         }
 
@@ -59,21 +55,22 @@ namespace RussellNX
 
         public void ParseFile(string path)
         {
-            // Yes, I know that this is ugly. But this way we don't have to rely on JSON libraries!!!!
+            IsNuBeta = true;
 
-            string[] settings = File.ReadAllLines(path);
-            checkNSPPublish.Checked = settings[5].Replace("    \"option_switch_check_nsp_publish_errors\": ", string.Empty) == "true,";
-            checkFileAccessLog.Checked = settings[6].Replace("    \"option_switch_enable_fileaccess_checking\": ", string.Empty) == "true,";
-            checkNEXLibs.Checked = settings[7].Replace("    \"option_switch_enable_nex_libraries\": ", string.Empty) == "true,";
-            checkInterpolation.Checked = settings[8].Replace("    \"option_switch_interpolate_pixels\": ", string.Empty) == "true,";
-            textBoxNmeta.Text = settings[9].Replace("    \"option_switch_project_nmeta\": \"", string.Empty).TrimEnd(new char[] { '"', ',' });
-            string scale = settings[10].Replace("    \"option_switch_scale\": ", string.Empty);
-            if (scale == "0,")
+            string settings = File.ReadAllText(path);
+            SwitchOptions jsettings = JsonConvert.DeserializeObject<SwitchOptions>(settings);
+            checkNSPPublish.Checked = jsettings.option_switch_check_nsp_publish_errors;
+            checkFileAccessLog.Checked = jsettings.option_switch_enable_fileaccess_checking;
+            checkNEXLibs.Checked = jsettings.option_switch_enable_nex_libraries;
+            checkInterpolation.Checked = jsettings.option_switch_interpolate_pixels;
+            textBoxNmeta.Text = jsettings.option_switch_project_nmeta;
+            int scale = jsettings.option_switch_scale;
+            if (scale == 0)
             {
                 radioFullScale.Checked = false;
                 radioKeepAspect.Checked = true;
             }
-            else if (scale == "1,")
+            else if (scale == 1)
             {
                 radioFullScale.Checked = true;
                 radioKeepAspect.Checked = false;
@@ -83,7 +80,7 @@ namespace RussellNX
                 MessageBox.Show("Error when parsing scale!");
             }
 
-            string tpageSize = settings[11].Replace("    \"option_switch_texture_page\": ", "").Replace("\"", "");
+            string tpageSize = jsettings.option_switch_texture_page;
             foreach (var item in comboTPageSize.Items)
             {
                 if (tpageSize == item.ToString())
@@ -94,23 +91,57 @@ namespace RussellNX
             }
 
             FilePath = path;
+
+            if (jsettings.resourceVersion == null) IsNuBeta = false;
+
+            if (IsNuBeta)
+            {
+                checkUseSplash.Checked = jsettings.option_switch_use_splash;
+                buttonViewSplash.Tag = jsettings.option_switch_splash_screen;
+            }
+            else
+            {
+                // no please.
+                checkUseSplash.Enabled = false;
+                buttonChangeSplash.Enabled = false;
+                buttonViewSplash.Enabled = false;
+
+                MainlineGuid = jsettings.id;
+            }
         }
 
         private void SaveSettingsBtn_Click(object sender, EventArgs e)
         {
-            string settings = SettingsTemplate;
-            settings = settings.Replace("{CHECKNSP}", checkNSPPublish.Checked ? "true" : "false");
-            settings = settings.Replace("{FILEACCESS}", checkFileAccessLog.Checked ? "true" : "false");
-            settings = settings.Replace("{NEXLIBS}", checkNEXLibs.Checked ? "true" : "false");
-            settings = settings.Replace("{INTERPOLATE}", checkInterpolation.Checked ? "true" : "false");
-            settings = settings.Replace("{NMETAPATH}", textBoxNmeta.Text);
-            if (radioFullScale.Checked && !radioKeepAspect.Checked)
-                settings = settings.Replace("{SCALE}", "1");
-            else
-                settings = settings.Replace("{SCALE}", "0");
-            settings = settings.Replace("{TPAGESIZE}", comboTPageSize.SelectedItem.ToString());
+            JObject jsettings = new JObject
+            {
+                // common stuff...
+                { "name", "Switch" },
+                { "option_switch_check_nsp_publish_errors", checkNSPPublish.Checked },
+                { "option_switch_enable_fileaccess_checking", checkFileAccessLog.Checked },
+                { "option_switch_enable_nex_libraries", checkNEXLibs.Checked },
+                { "option_switch_interpolate_pixels", checkInterpolation.Checked },
+                { "option_switch_project_nmeta", textBoxNmeta.Text },
+                { "option_switch_scale", radioFullScale.Checked ? 1 : 0 },
+                { "option_switch_texture_page", comboTPageSize.SelectedItem.ToString() }
+            };
 
-            File.WriteAllText(FilePath, settings, Encoding.UTF8);
+            // finish off with project format stuff...
+            if (IsNuBeta)
+            {
+                jsettings.Add("option_switch_use_splash", checkUseSplash.Checked);
+                jsettings.Add("option_switch_splash_screen", (string)buttonViewSplash.Tag);
+                jsettings.Add("resourceVersion", "1.0");
+                jsettings.Add("resourceType", "GMSwitchOptions");
+                jsettings.Add("tags", new JArray());
+            }
+            else
+            {
+                jsettings.Add("mvc", "1.0");
+                jsettings.Add("modelName", "GMSwitchOptions");
+                jsettings.Add("id", MainlineGuid);
+            }
+
+            File.WriteAllText(FilePath, jsettings.ToString(), Encoding.UTF8);
 
             Close();
         }
@@ -119,6 +150,7 @@ namespace RussellNX
         {
             string[] quotes;
             var ci = CultureInfo.CurrentUICulture.Name;
+
             if (ci == "ru-RU")
             {
                 quotes = new string[]
@@ -133,7 +165,10 @@ namespace RussellNX
                     "Ешь вода, пей вода, не будешь срать ты никогда!",
                     "памагите лампачка гарит",
                     "акакой взламать вайфай",
-                    "е-батюшка - исповедование онлайн!"
+                    "е-батюшка - исповедование онлайн!",
+                    "британские мопсохакеры бдят",
+                    "фу к*рилл п*ни",
+                    "БЕЛКА!"
                 };
             }
             else
@@ -142,7 +177,7 @@ namespace RussellNX
                 {
                     "If you feel tired, go outside for a walk.",
                     "May contain piracy.",
-                    "2.3 support wen",
+                    "2.3 support is!!!!",
                     "animals r cute",
                     "why do I suck at making UI design?",
                     "remember to take a break every 30 minutes.",
@@ -150,12 +185,51 @@ namespace RussellNX
                     "Stay safe, stay home.",
                     "australia's fake lmao",
                     "lojemiru sucks",
-                    "blini, truly the yummiest of dishes." // <-- approved by blini gang.
+                    "blini, truly the yummiest of dishes.", // <-- approved by blini gang.
+                    "Don't eat yellow snow",
+                    "I'm shocked there isn't a mention of pug",
+                    "LUL",
+                    "beep boop blini service resumed"
                 };
             }
 
 
             return quotes[new Random().Next(0, quotes.Length - 1)];
+        }
+
+        private void buttonViewSplash_Click(object sender, EventArgs e)
+        {
+            return;
+
+            Process.Start(UnescapeGMMacros((string)buttonViewSplash.Tag));
+        }
+
+        private string UnescapeGMMacros(string _In)
+        {
+            string _Out = _In;
+
+            // TODO: properly parse macros-es.
+
+            return _Out;
+        }
+
+        private void buttonChangeSplash_Click(object sender, EventArgs e)
+        {
+            return;
+
+            if (openSplashDialog.ShowDialog() == DialogResult.OK)
+            {
+                var stream = openSplashDialog.OpenFile();
+                if (stream != null)
+                {
+                    var new_stream = File.Open("", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                    stream.CopyTo(new_stream);
+                    stream.Dispose();
+
+                    new_stream.Flush(true);
+                    new_stream.Dispose();
+                }
+            }
         }
     }
 }

@@ -51,7 +51,6 @@
             this.LogTitle = new System.Windows.Forms.Label();
             this.IconPicBox = new System.Windows.Forms.PictureBox();
             this.RuntimeLabelBox = new System.Windows.Forms.Label();
-            this.RuntimeVersionBox = new System.Windows.Forms.MaskedTextBox();
             this.AdvancedOptionsLabel = new System.Windows.Forms.Label();
             this.StartupAccCheckbox = new System.Windows.Forms.CheckBox();
             this.DataLossCheckbox = new System.Windows.Forms.CheckBox();
@@ -67,6 +66,7 @@
             this.ProjectSettingsBtn = new System.Windows.Forms.Button();
             this.ExportLogBtn = new System.Windows.Forms.Button();
             this.CleanLogBtn = new System.Windows.Forms.Button();
+            this.RuntimeChooserBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.IconPicBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -305,17 +305,6 @@
             this.RuntimeLabelBox.TabIndex = 23;
             this.RuntimeLabelBox.Text = "Runtime version:";
             // 
-            // RuntimeVersionBox
-            // 
-            this.RuntimeVersionBox.Culture = new System.Globalization.CultureInfo("en-001");
-            this.RuntimeVersionBox.Location = new System.Drawing.Point(274, 79);
-            this.RuntimeVersionBox.Mask = "0.0.0.000";
-            this.RuntimeVersionBox.Name = "RuntimeVersionBox";
-            this.RuntimeVersionBox.Size = new System.Drawing.Size(83, 20);
-            this.RuntimeVersionBox.TabIndex = 25;
-            this.RuntimeVersionBox.Text = "223344";
-            this.RuntimeVersionBox.TextChanged += new System.EventHandler(this.RuntimeVersionBox_TextChanged);
-            // 
             // AdvancedOptionsLabel
             // 
             this.AdvancedOptionsLabel.AutoSize = true;
@@ -472,11 +461,22 @@
             this.CleanLogBtn.UseVisualStyleBackColor = true;
             this.CleanLogBtn.Click += new System.EventHandler(this.CleanLogBtn_Click);
             // 
+            // RuntimeChooserBox
+            // 
+            this.RuntimeChooserBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.RuntimeChooserBox.FormattingEnabled = true;
+            this.RuntimeChooserBox.Location = new System.Drawing.Point(277, 76);
+            this.RuntimeChooserBox.Name = "RuntimeChooserBox";
+            this.RuntimeChooserBox.Size = new System.Drawing.Size(158, 21);
+            this.RuntimeChooserBox.TabIndex = 41;
+            this.RuntimeChooserBox.SelectedValueChanged += new System.EventHandler(this.RuntimeChooserBox_SelectedValueChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1140, 684);
+            this.Controls.Add(this.RuntimeChooserBox);
             this.Controls.Add(this.CleanLogBtn);
             this.Controls.Add(this.ExportLogBtn);
             this.Controls.Add(this.ProjectSettingsBtn);
@@ -492,7 +492,6 @@
             this.Controls.Add(this.DataLossCheckbox);
             this.Controls.Add(this.StartupAccCheckbox);
             this.Controls.Add(this.AdvancedOptionsLabel);
-            this.Controls.Add(this.RuntimeVersionBox);
             this.Controls.Add(this.RuntimeLabelBox);
             this.Controls.Add(this.LogTitle);
             this.Controls.Add(this.LogBox);
@@ -552,7 +551,6 @@
         private System.Windows.Forms.RichTextBox LogBox;
         private System.Windows.Forms.Label LogTitle;
         private System.Windows.Forms.Label RuntimeLabelBox;
-        private System.Windows.Forms.MaskedTextBox RuntimeVersionBox;
         private System.Windows.Forms.Label AdvancedOptionsLabel;
         private System.Windows.Forms.CheckBox StartupAccCheckbox;
         private System.Windows.Forms.CheckBox DataLossCheckbox;
@@ -568,6 +566,7 @@
         private System.Windows.Forms.Button ProjectSettingsBtn;
         private System.Windows.Forms.Button ExportLogBtn;
         private System.Windows.Forms.Button CleanLogBtn;
+        private System.Windows.Forms.ComboBox RuntimeChooserBox;
     }
 }
 

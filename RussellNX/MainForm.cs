@@ -24,14 +24,14 @@ namespace RussellNX
     public partial class MainForm : Form
     {
         public static string AppDir = AppDomain.CurrentDomain.BaseDirectory;
-        public static string RuntimeVersion = "2.2.3.344";
+        public static string RuntimeVerString = string.Empty;
 
         // mhmm...... can we somehow make it Windows & macOS friendly instead of Windows only?
-        public static string RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
-        public static string FriendlyYYPName = "";
+        public static string RuntimePath = string.Empty;
+        public static string FriendlyYYPName = string.Empty;
         public static string GameIconPath = AppDir + "default_icon.jpg";
-        public static string RNXVersionString = "1.3.8";
-        public static string LogText = ""; // for some reason text in LogBox can get truncated o_O
+        public static string RNXVersionString = "1.4.0";
+        public static string LogText = string.Empty; // for some reason text in LogBox can get truncated o_O
         public static int BuildState = 0;
         public static int StringsCount = 0;
 
@@ -193,6 +193,8 @@ namespace RussellNX
                 StartupAccCheckbox.Text = "Требовать выбора аккаунта перед запуском игры?";
                 DataLossCheckbox.Text = "Показывать окно о возможной потере данных перед выходом?";
                 LanguagesLabel.Text = "Поддерживаемые языки:";
+
+                /*
                 aengCheckbox.Text = "Американский Английский";
                 freCheckbox.Text = "Французский";
                 spaCheckbox.Text = "Испанский";
@@ -201,6 +203,8 @@ namespace RussellNX
                 dutCheckbox.Text = "Нидерландский";
                 porCheckbox.Text = "Португальский";
                 gerCheckbox.Text = "Немецкий";
+                */
+
                 LogTitle.Text = "Лог:";
                 ProjectPathLabel.Text = "Файл проекта:";
                 GameNameLabel.Text = "Имя игры:";
@@ -247,7 +251,7 @@ namespace RussellNX
         private void BuildButton_Click(object sender, EventArgs e)
         {
 
-            //Idiot checks.
+            //Idiot checks. (a lot of)
             if (!File.Exists(ProjectPathBox.Text))
             {
                 MessageBox.Show("Project file does not exist!\nPlease select a valid project file.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -279,19 +283,19 @@ namespace RussellNX
             }
 
             string prebuiltPath = "";
-            if (!Directory.Exists(AppDir + @"runners\build" + RuntimeVersion))
+            if (!Directory.Exists(AppDir + @"runners\build" + RuntimeVerString))
             {
                 MessageBox.Show("ERROR! Nik didn't built an ExeFS for your runtime version,\ncould you please try a different one?\n\n(or contact nik at nik#5351 and tell him the version you want)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else prebuiltPath = AppDir + @"runners\build" + RuntimeVersion;
+            else prebuiltPath = AppDir + @"runners\build" + RuntimeVerString;
 
             if (!CheckTitleID()) return;
 
             // Dear YoYoGames: Don't you ever fucking patch this.
             // ya hear me? I stole your cat!
             // I'll be watching...
-            if (int.Parse(RuntimeVersion.Substring(4, 1)) > 3) // if third integer in runtime version is >3 (newer than 2.2.3)
+            if (((RuntimeVersion)RuntimeChooserBox.SelectedItem).IsNuBeta || (int.Parse(RuntimeVerString.Substring(4, 1)) > 3)) // if third integer in runtime version is >3 (newer than 2.2.3)
             {
                 string hash = "";
                 using (var md5 = MD5.Create())
@@ -434,6 +438,7 @@ namespace RussellNX
                 xml.Element("Application").Add(new XElement("SupportedLanguage", lang));
                 xml.Element("Application").Add(new XElement("Title", new XElement("Language", lang), new XElement("Name", GameNameBox.Text), new XElement("Publisher", AuthorBox.Text)));
             }
+
             xml.Element("Application").Element("DisplayVersion").Value = VersionBox.Text;
             xml.Element("Application").Element("DataLossConfirmation").Value = DataLossCheckbox.Checked ? "Required" : "None";
             xml.Element("Application").Element("StartupUserAccount").Value = StartupAccCheckbox.Checked ? "Required" : "None";
@@ -535,9 +540,16 @@ namespace RussellNX
             VersionBox.Text = data["Main"]["AppVersion"];
             KeysBox.Text = data["Main"]["AppKeysPath"];
             GameIconPath = data["Main"]["AppIconPath"];
-            RuntimeVersion = data["Main"]["RuntimeVersion"];
-            RuntimeVersionBox.Text = RuntimeVersion;
-            RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
+            RuntimeVerString = data["Main"]["RuntimeVersion"];
+            foreach (RuntimeVersion item in RuntimeChooserBox.Items)
+            {
+                if (item.Version == RuntimeVerString)
+                {
+                    RuntimeChooserBox.SelectedItem = item;
+                    break;
+                }
+            }
+            RuntimePath = ((RuntimeVersion)RuntimeChooserBox.SelectedItem).FullPath;
             FriendlyYYPName = Path.GetFileNameWithoutExtension(ProjectPathBox.Text);
             LoadCheckboxStr(data["Main"]["CheckboxState"]);
             prnt("GameName: " + FriendlyYYPName);
@@ -556,7 +568,7 @@ namespace RussellNX
             data["Main"]["AppVersion"] = VersionBox.Text;
             data["Main"]["AppKeysPath"] = KeysBox.Text;
             data["Main"]["AppIconPath"] = GameIconPath;
-            data["Main"]["RuntimeVersion"] = RuntimeVersion;
+            data["Main"]["RuntimeVersion"] = RuntimeVerString;
             data["Main"]["CheckboxState"] = RetCheckboxStr();
             data["AppVersion"]["RNXVer"] = RNXVersionString;
             parser.WriteFile(AppDir + "RussellNX.ini", data);
@@ -591,12 +603,6 @@ namespace RussellNX
             prnt("Saving...");
             SaveSettings();
 
-        }
-
-        private void RuntimeVersionBox_TextChanged(object sender, EventArgs e)
-        {
-            RuntimeVersion = RuntimeVersionBox.Text;
-            RuntimePath = Environment.ExpandEnvironmentVariables("%PROGRAMDATA%") + "\\GameMakerStudio2\\Cache\\runtimes\\runtime-" + RuntimeVersion;
         }
 
         public void CopyLang(CheckBox c, string dir)
@@ -667,32 +673,12 @@ namespace RussellNX
                 {
                     Directory.CreateDirectory(fpath);
 
-                    // Write .yy file from Embedded Resources.
-                    var fpath2 = fpath + "options_switch.yy";
-                    var r = new ResourceManager(this.GetType());
-                    byte[] b = (byte[])r.GetObject("options_switch"); // embedded resources don't have extensions.
-                    File.WriteAllBytes(fpath2, b);
+                    string nnName = "Is your project a GMS2.3 one?";
+                    if (ci == "ru-RU") nnName = "У вас GMS2.3 проект?";
 
-                    // Modify root .yyp
-                    List<string> bigProj = ReadAllList(ProjectPathBox.Text);
-                    var resGuid = Guid.NewGuid();
-                    int windowsLineInd = bigProj.IndexOf(bigProj.Where(l => l.Contains("\"resourceType\": \"GMWindowsOptions\"")).First());
-                    windowsLineInd += 2; // skip "}" and "},"
-
-                    // construct GMSwitchOptions entry.
-                    bigProj.Insert(++windowsLineInd, "        {");
-                    bigProj.Insert(++windowsLineInd, "            \"Key\": \"3a5af38c-757d-41ae-98c0-5d4b09e14e6a\",");
-                    bigProj.Insert(++windowsLineInd, "            \"Value\": {");
-                    bigProj.Insert(++windowsLineInd, $"                \"id\": \"{resGuid}\",");
-                    bigProj.Insert(++windowsLineInd, @"                ""resourcePath"": ""options\\switch\\options_switch.yy"",");
-                    bigProj.Insert(++windowsLineInd, "                \"resourceType\": \"GMSwitchOptions\"");
-                    bigProj.Insert(++windowsLineInd, "            }");
-                    bigProj.Insert(++windowsLineInd, "        },");
-
-                    File.Copy(ProjectPathBox.Text, ProjectPathBox.Text + ".rnxbk");
-                    File.WriteAllLines(ProjectPathBox.Text, ListToArray(bigProj), Encoding.UTF8);
-                    prnt("Backed up .yyp as " + ProjectPathBox.Text + ".rnxbk (if something had gone wrong, delete broken .yyp and remove .rnxbk extension.)");
-                    prnt("Switch settings generated!");
+                    var nret = MessageBox.Show(nnName, "?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    if (nret == DialogResult.No) PatchYYPMainline(fpath);
+                    else PatchYYPNuBeta(fpath);
                 }
                 else return false;
             }
@@ -700,10 +686,59 @@ namespace RussellNX
             return true;
         }
 
+        private void PatchYYPNuBeta(string fpath)
+        {
+            // Write .yy file from Embedded Resources.
+            var fpath2 = fpath + "options_switch.yy";
+            var r = new ResourceManager(this.GetType());
+            byte[] b = (byte[])r.GetObject("options_switch_nubeta"); // embedded resources don't have extensions.
+            File.WriteAllBytes(fpath2, b);
+
+            // Modify root .yyp
+            List<string> bigProj = ReadAllList(ProjectPathBox.Text);
+            int windowsLineInd = bigProj.IndexOf(bigProj.Where(l => l.Contains("    {\"name\":\"Windows\",\"path\":\"")).First());
+            bigProj.Insert(++windowsLineInd, @"    {""name"":""Switch"",""path"":""options/switch/options_switch.yy"",},");
+
+            File.Copy(ProjectPathBox.Text, ProjectPathBox.Text + ".rnxbk");
+            File.WriteAllLines(ProjectPathBox.Text, ListToArray(bigProj), Encoding.UTF8);
+            prnt("Backed up NuBeta .yyp as " + ProjectPathBox.Text + ".rnxbk (if something had gone wrong, delete broken .yyp and remove .rnxbk extension.)");
+            prnt("NuBeta Switch settings generated!");
+        }
+
+        private void PatchYYPMainline(string fpath)
+        {
+            // Write .yy file from Embedded Resources.
+            var fpath2 = fpath + "options_switch.yy";
+            var r = new ResourceManager(this.GetType());
+            byte[] b = (byte[])r.GetObject("options_switch"); // embedded resources don't have extensions.
+            File.WriteAllBytes(fpath2, b);
+
+            // Modify root .yyp
+            List<string> bigProj = ReadAllList(ProjectPathBox.Text);
+            var resGuid = Guid.NewGuid();
+            int windowsLineInd = bigProj.IndexOf(bigProj.Where(l => l.Contains("\"resourceType\": \"GMWindowsOptions\"")).First());
+            windowsLineInd += 2; // skip "}" and "},"
+
+            // construct GMSwitchOptions entry.
+            bigProj.Insert(++windowsLineInd, "        {");
+            bigProj.Insert(++windowsLineInd, "            \"Key\": \"3a5af38c-757d-41ae-98c0-5d4b09e14e6a\",");
+            bigProj.Insert(++windowsLineInd, "            \"Value\": {");
+            bigProj.Insert(++windowsLineInd,$"                \"id\": \"{resGuid}\",");
+            bigProj.Insert(++windowsLineInd,@"                ""resourcePath"": ""options\\switch\\options_switch.yy"",");
+            bigProj.Insert(++windowsLineInd, "                \"resourceType\": \"GMSwitchOptions\"");
+            bigProj.Insert(++windowsLineInd, "            }");
+            bigProj.Insert(++windowsLineInd, "        },");
+
+            File.Copy(ProjectPathBox.Text, ProjectPathBox.Text + ".nubk");
+            File.WriteAllLines(ProjectPathBox.Text, ListToArray(bigProj), Encoding.UTF8);
+            prnt("Backed up .yyp as " + ProjectPathBox.Text + ".nubk (if something had gone wrong, delete broken .yyp and remove .nubk extension.)");
+            prnt("Switch settings generated!");
+        }
+
         private List<string> ReadAllList(string filePath)
         {
             var array = File.ReadAllLines(filePath, Encoding.UTF8);
-            var list = new List<string>();
+            var list = new List<string>(array.Length);
             for (int i = 0; i < array.Length; i++)
                 list.Add(array[i]);
 
@@ -744,6 +779,42 @@ namespace RussellNX
         private void CleanLogBtn_Click(object sender, EventArgs e)
         {
             prnt("$LOG_CLEAN");
+        }
+
+        private void SearchForRuntimes(string ci)
+        {
+            string MainlinePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\GameMakerStudio2\\Cache\\runtimes\\";
+            if (Directory.Exists(MainlinePath))
+            {
+                // look out for 2.0-2.2.5 runtimes
+                foreach (var dinfo in Directory.EnumerateDirectories(MainlinePath))
+                {
+                    string runtimever = Path.GetFileName(dinfo).Replace("runtime-", string.Empty); // looks weird, I know.
+                    var runtime = new RuntimeVersion() { Version = runtimever, IsNuBeta = false, FullPath = dinfo };
+                    RuntimeChooserBox.Items.Add(runtime);
+                }
+            }
+            else
+            {
+                string enMsg = "Excuse me, you don't have GMS 2? Who the cat are you?";
+                string ruMsg = "Прощу прощения мистар геймдевелопер, но у вас нет гмс2? енто как? :)";
+                MessageBox.Show(ci == "ru-RU" ? ruMsg : enMsg, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(-1);
+            }
+
+            // WHEN 2.3 COMES OUT OF BETA, THE PATH WILL BE SET TO MAINLINE.
+            // DON'T FORGET THIS NIK DON'T FORGET THIS NIK DON'T FORGET THIS NIK DON'T FORGET THIS NIK DON'T FORGET THIS NIK
+            string NuBetaPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\GameMakerStudio2-Beta\\Cache\\runtimes\\";
+            if (Directory.Exists(NuBetaPath))
+            {
+                // look out for "NuBeta" runtimes (>=2.3)
+                foreach (var dinfo in Directory.EnumerateDirectories(NuBetaPath))
+                {
+                    string runtimever = Path.GetFileName(dinfo).Replace("runtime-", string.Empty); // looks weird, I know.
+                    var runtime = new RuntimeVersion() { Version = runtimever, IsNuBeta = true, FullPath = dinfo };
+                    RuntimeChooserBox.Items.Add(runtime);
+                }
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs _e)
@@ -801,6 +872,8 @@ namespace RussellNX
 
             prnt("WARNING: Installing Custom NSPs may get your Switch banned, be careful!\n");
 
+            SearchForRuntimes(ci);
+
             if (!File.Exists(AppDir + "RussellNX.ini")) DefaultSettings(); else LoadSettings();
 
             //Set version label
@@ -830,6 +903,15 @@ namespace RussellNX
             CheckForKeys(ci);
             RandomQuotePrint(ci);
             prnt("RussellNX Version " + RNXVersionString + " is waiting for you, master!");
+        }
+
+        private void RuntimeChooserBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            RuntimeVersion item = (RuntimeVersion)RuntimeChooserBox.SelectedItem;
+            RuntimeVerString = item.Version;
+            RuntimePath = item.FullPath;
+
+            //prnt("RuntimeVer: " + RuntimeVerString);
         }
     }
 }

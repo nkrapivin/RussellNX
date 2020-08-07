@@ -811,4 +811,7 @@
   <data name="options_switch" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\options_switch.yy;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="options_switch_nubeta" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\options_switch_nubeta.yy;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

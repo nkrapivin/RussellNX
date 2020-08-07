@@ -43,6 +43,10 @@
             this.textBoxNmeta = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkUseSplash = new System.Windows.Forms.CheckBox();
+            this.buttonViewSplash = new System.Windows.Forms.Button();
+            this.buttonChangeSplash = new System.Windows.Forms.Button();
+            this.openSplashDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -115,7 +119,7 @@
             // 
             this.labelTPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelTPage.AutoSize = true;
-            this.labelTPage.Location = new System.Drawing.Point(9, 232);
+            this.labelTPage.Location = new System.Drawing.Point(12, 221);
             this.labelTPage.Name = "labelTPage";
             this.labelTPage.Size = new System.Drawing.Size(137, 13);
             this.labelTPage.TabIndex = 8;
@@ -124,7 +128,7 @@
             // SaveSettingsBtn
             // 
             this.SaveSettingsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.SaveSettingsBtn.Location = new System.Drawing.Point(462, 289);
+            this.SaveSettingsBtn.Location = new System.Drawing.Point(462, 331);
             this.SaveSettingsBtn.Name = "SaveSettingsBtn";
             this.SaveSettingsBtn.Size = new System.Drawing.Size(120, 23);
             this.SaveSettingsBtn.TabIndex = 9;
@@ -145,7 +149,7 @@
             "4096x4096",
             "8192x8192",
             "16384x16384"});
-            this.comboTPageSize.Location = new System.Drawing.Point(257, 229);
+            this.comboTPageSize.Location = new System.Drawing.Point(257, 218);
             this.comboTPageSize.Name = "comboTPageSize";
             this.comboTPageSize.Size = new System.Drawing.Size(325, 21);
             this.comboTPageSize.TabIndex = 10;
@@ -154,7 +158,7 @@
             // 
             this.labelRndQuote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelRndQuote.AutoSize = true;
-            this.labelRndQuote.Location = new System.Drawing.Point(9, 294);
+            this.labelRndQuote.Location = new System.Drawing.Point(9, 336);
             this.labelRndQuote.Name = "labelRndQuote";
             this.labelRndQuote.Size = new System.Drawing.Size(78, 13);
             this.labelRndQuote.TabIndex = 11;
@@ -164,7 +168,7 @@
             // 
             this.labelNmetaPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelNmetaPath.AutoSize = true;
-            this.labelNmetaPath.Location = new System.Drawing.Point(9, 259);
+            this.labelNmetaPath.Location = new System.Drawing.Point(12, 248);
             this.labelNmetaPath.Name = "labelNmetaPath";
             this.labelNmetaPath.Size = new System.Drawing.Size(66, 13);
             this.labelNmetaPath.TabIndex = 12;
@@ -174,7 +178,7 @@
             // 
             this.textBoxNmeta.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxNmeta.Enabled = false;
-            this.textBoxNmeta.Location = new System.Drawing.Point(257, 256);
+            this.textBoxNmeta.Location = new System.Drawing.Point(257, 245);
             this.textBoxNmeta.Name = "textBoxNmeta";
             this.textBoxNmeta.Size = new System.Drawing.Size(325, 20);
             this.textBoxNmeta.TabIndex = 13;
@@ -204,16 +208,58 @@
             this.groupBox2.Controls.Add(this.radioKeepAspect);
             this.groupBox2.Location = new System.Drawing.Point(12, 140);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(570, 69);
+            this.groupBox2.Size = new System.Drawing.Size(570, 72);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Scaling mode";
+            // 
+            // checkUseSplash
+            // 
+            this.checkUseSplash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkUseSplash.AutoSize = true;
+            this.checkUseSplash.Location = new System.Drawing.Point(12, 274);
+            this.checkUseSplash.Name = "checkUseSplash";
+            this.checkUseSplash.Size = new System.Drawing.Size(196, 17);
+            this.checkUseSplash.TabIndex = 16;
+            this.checkUseSplash.Text = "Use splash screen? (NuBeta ONLY)";
+            this.checkUseSplash.UseVisualStyleBackColor = true;
+            // 
+            // buttonViewSplash
+            // 
+            this.buttonViewSplash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonViewSplash.Location = new System.Drawing.Point(12, 298);
+            this.buttonViewSplash.Name = "buttonViewSplash";
+            this.buttonViewSplash.Size = new System.Drawing.Size(114, 23);
+            this.buttonViewSplash.TabIndex = 17;
+            this.buttonViewSplash.Text = "View splash screen";
+            this.buttonViewSplash.UseVisualStyleBackColor = true;
+            this.buttonViewSplash.Click += new System.EventHandler(this.buttonViewSplash_Click);
+            // 
+            // buttonChangeSplash
+            // 
+            this.buttonChangeSplash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonChangeSplash.Location = new System.Drawing.Point(132, 298);
+            this.buttonChangeSplash.Name = "buttonChangeSplash";
+            this.buttonChangeSplash.Size = new System.Drawing.Size(122, 23);
+            this.buttonChangeSplash.TabIndex = 18;
+            this.buttonChangeSplash.Text = "Change splash screen";
+            this.buttonChangeSplash.UseVisualStyleBackColor = true;
+            this.buttonChangeSplash.Click += new System.EventHandler(this.buttonChangeSplash_Click);
+            // 
+            // openSplashDialog
+            // 
+            this.openSplashDialog.DefaultExt = "png";
+            this.openSplashDialog.FileName = "splash.png";
+            this.openSplashDialog.Filter = "PNG files|*.png";
             // 
             // ProjectSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(594, 321);
+            this.ClientSize = new System.Drawing.Size(594, 363);
+            this.Controls.Add(this.buttonChangeSplash);
+            this.Controls.Add(this.buttonViewSplash);
+            this.Controls.Add(this.checkUseSplash);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.textBoxNmeta);
@@ -225,7 +271,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(610, 360);
+            this.MinimumSize = new System.Drawing.Size(610, 400);
             this.Name = "ProjectSettings";
             this.Text = "RussellNX: Project settings.";
             this.groupBox1.ResumeLayout(false);
@@ -252,5 +298,9 @@
         private System.Windows.Forms.TextBox textBoxNmeta;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox checkUseSplash;
+        private System.Windows.Forms.Button buttonViewSplash;
+        private System.Windows.Forms.Button buttonChangeSplash;
+        private System.Windows.Forms.OpenFileDialog openSplashDialog;
     }
 }

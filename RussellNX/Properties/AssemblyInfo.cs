@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("RussellNX")]
 [assembly: AssemblyDescription("RussellNX is a tool to build homebrew GMS 2 games for Switch.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("'lulzing at yoyo' inc.")]
+[assembly: AssemblyCompany("nkrapivindev")]
 [assembly: AssemblyProduct("RussellNX")]
 [assembly: AssemblyCopyright("Copyright ©  2020 absolutely no one lol")]
 [assembly: AssemblyTrademark("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.3.8.0")]
-[assembly: AssemblyFileVersion("1.3.8.0")]
+[assembly: AssemblyVersion("1.4.0.0")]
+[assembly: AssemblyFileVersion("1.4.0.0")]
