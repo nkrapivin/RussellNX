@@ -30,10 +30,7 @@ namespace RussellNX
         public static string RuntimePath = string.Empty;
         public static string FriendlyYYPName = string.Empty;
         public static string GameIconPath = AppDir + "default_icon.jpg";
-        public static string RNXVersionString = "1.4.0";
-        public static string LogText = string.Empty; // for some reason text in LogBox can get truncated o_O
-        public static int BuildState = 0;
-        public static int StringsCount = 0;
+        public static string RNXVersionString = "1.5.0";
 
         public MainForm()
         {
@@ -89,7 +86,7 @@ namespace RussellNX
                 if (ci == "ru-RU")
                     prnt("Не застревать в текстурах!"); // don't get stuck in the textures! (Artur's greeting/quote)
                 else
-                    prnt("Lojemiru sux btw.");
+                    prnt("Finally with 2.3!");
             }
 
             if (Debugger.IsAttached) Text += " (Running inside Visual Studio)";
@@ -223,18 +220,8 @@ namespace RussellNX
         private void prnt(string log)
         {
             //Special command that cleans the LogBox.
-            if (log == "$LOG_CLEAN") { LogText = ""; StringsCount = 0; }
-            else LogText += log + "\n"; //Append text
-
-            //Scroll to the end.
-            StringsCount++;
-            LogBox.Text = LogText;
-            if (StringsCount > 21)
-            {
-                LogBox.Focus();
-                LogBox.SelectionStart = LogBox.Text.Length;
-                LogBox.ScrollToCaret();
-            }
+            if (log == "$LOG_CLEAN") LogBox.Clear();
+            else LogBox.AppendText(log + "\n");
         }
 
         private bool CheckTitleID()
@@ -270,25 +257,24 @@ namespace RussellNX
                 return;
             }
 
-            if (!File.Exists(RuntimePath + "\\bin\\GMAssetCompiler.exe"))
+            if (!File.Exists(Path.Combine(RuntimePath, "bin", "GMAssetCompiler.exe")))
             {
                 MessageBox.Show("This path is invalid, maybe your runtime version is invalid?\n\nrpath: " + RuntimePath, "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (!File.Exists(AppDir + "license\\licence.plist"))
+            if (!File.Exists(Path.Combine(AppDir, "license", "licence.plist")))
             {
                 MessageBox.Show("Couldn't find fakesigned licence.plist file.\nPlease redownload RussellNX.", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            string prebuiltPath = "";
-            if (!Directory.Exists(AppDir + @"runners\build" + RuntimeVerString))
+            string prebuiltPath = Path.Combine(AppDir, "runners", "build" + RuntimeVerString);
+            if (!Directory.Exists(prebuiltPath))
             {
                 MessageBox.Show("ERROR! Nik didn't built an ExeFS for your runtime version,\ncould you please try a different one?\n\n(or contact nik at nik#5351 and tell him the version you want)", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            else prebuiltPath = AppDir + @"runners\build" + RuntimeVerString;
 
             if (!CheckTitleID()) return;
 
@@ -362,8 +348,8 @@ namespace RussellNX
             CopyLang(gerCheckbox, iconsDir);
 
             prnt("Generating GMAssetCompiler args str");
-            string GMACPath = RuntimePath + "\\bin\\GMAssetCompiler.exe";
-            string BaseProjPath = RuntimePath + "\\BaseProject\\BaseProject.yyp";
+            string GMACPath = Path.Combine(RuntimePath, "bin", "GMAssetCompiler.exe");
+            string BaseProjPath = Path.Combine(RuntimePath, "BaseProject", "BaseProject.yyp");
             string GameProjPath = ProjectPathBox.Text;
             string GameName = FriendlyYYPName;
             string CacheDir = TempDirectoryPath + "\\CelesteCacheDir" + (ind2 - 10).ToString();
@@ -378,7 +364,7 @@ namespace RussellNX
             Directory.CreateDirectory(CacheDir);
             Directory.CreateDirectory(OutputDir);
 
-            string GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @""" /preprocess=""" + CacheDir + @"""";
+            string GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=5 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @""" /preprocess=""" + CacheDir + @"""";
             prnt(GMACArgs);
             //return;
 
@@ -408,7 +394,7 @@ namespace RussellNX
             process.CancelOutputRead();
             
 
-            GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=8 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @"""";
+            GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=5 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @"""";
             process.StartInfo.Arguments = GMACArgs;
             prnt(GMACArgs);
 
@@ -767,7 +753,7 @@ namespace RussellNX
             {
                 if ((myStream = dialog.OpenFile()) != null)
                 {
-                    byte[] to_write = Encoding.UTF8.GetBytes(LogText);
+                    byte[] to_write = Encoding.UTF8.GetBytes(LogBox.Text);
                     myStream.Write(to_write, 0, to_write.Length);
                     myStream.Close();
                     prnt("Log has been saved.");
@@ -781,6 +767,17 @@ namespace RussellNX
             prnt("$LOG_CLEAN");
         }
 
+        private bool IsMainlineActuallyNuBeta(string ver)
+        {
+            string[] numbers = ver.Split('.');
+            int second = int.Parse(numbers[1]);
+            // 2.3.232323
+            // [1] == 3
+            // 3 >= 3 -> nubeta
+            // otherwise, mainline.
+            return second >= 3;
+        }
+
         private void SearchForRuntimes(string ci)
         {
             string MainlinePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\GameMakerStudio2\\Cache\\runtimes\\";
@@ -790,7 +787,8 @@ namespace RussellNX
                 foreach (var dinfo in Directory.EnumerateDirectories(MainlinePath))
                 {
                     string runtimever = Path.GetFileName(dinfo).Replace("runtime-", string.Empty); // looks weird, I know.
-                    var runtime = new RuntimeVersion() { Version = runtimever, IsNuBeta = false, FullPath = dinfo };
+                    var runtime = new RuntimeVersion() { Version = runtimever, IsNuBeta = IsMainlineActuallyNuBeta(runtimever), FullPath = dinfo };
+
                     RuntimeChooserBox.Items.Add(runtime);
                 }
             }
@@ -802,8 +800,6 @@ namespace RussellNX
                 Environment.Exit(-1);
             }
 
-            // WHEN 2.3 COMES OUT OF BETA, THE PATH WILL BE SET TO MAINLINE.
-            // DON'T FORGET THIS NIK DON'T FORGET THIS NIK DON'T FORGET THIS NIK DON'T FORGET THIS NIK DON'T FORGET THIS NIK
             string NuBetaPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\GameMakerStudio2-Beta\\Cache\\runtimes\\";
             if (Directory.Exists(NuBetaPath))
             {
