@@ -30,7 +30,7 @@ namespace RussellNX
         public static string RuntimePath = string.Empty;
         public static string FriendlyYYPName = string.Empty;
         public static string GameIconPath = AppDir + "default_icon.jpg";
-        public static string RNXVersionString = "1.5.0";
+        public static string RNXVersionString = "1.5.1";
 
         public MainForm()
         {
@@ -338,6 +338,7 @@ namespace RussellNX
             DirectoryCopy(prebuiltPath, TempDirectoryPath + "\\build", true);
             prnt("Copying your icon as multiple for each language... :p");
             string iconsDir = TempDirectoryPath + "\\build\\control\\";
+            Directory.CreateDirectory(iconsDir);
             CopyLang(aengCheckbox, iconsDir); //always enabled...
             CopyLang(freCheckbox, iconsDir);
             CopyLang(spaCheckbox, iconsDir);
