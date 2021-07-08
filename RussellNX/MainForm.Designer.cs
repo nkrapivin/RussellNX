@@ -174,7 +174,7 @@
             // 
             this.VersionBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.VersionBox.Culture = new System.Globalization.CultureInfo("en-001");
+            this.VersionBox.Culture = new System.Globalization.CultureInfo("");
             this.VersionBox.Location = new System.Drawing.Point(700, 251);
             this.VersionBox.Mask = "0.0.0";
             this.VersionBox.Name = "VersionBox";

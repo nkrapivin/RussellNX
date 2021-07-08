@@ -30,7 +30,7 @@ namespace RussellNX
         public static string RuntimePath = string.Empty;
         public static string FriendlyYYPName = string.Empty;
         public static string GameIconPath = AppDir + "default_icon.jpg";
-        public static string RNXVersionString = "1.5.2";
+        public static string RNXVersionString = "1.5.3";
 
         public MainForm()
         {
@@ -228,7 +228,8 @@ namespace RussellNX
         private bool CheckTitleID()
         {
             string tt = TitleIDBox.Text;
-            if (tt.Length < TitleIDBox.MaxLength || !UInt64.TryParse(tt, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _))
+            ulong dummy = 0;
+            if (tt.Length < TitleIDBox.MaxLength || !UInt64.TryParse(tt, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out dummy))
             {
                 MessageBox.Show("Invalid title ID!", "ERROR!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -859,6 +860,8 @@ namespace RussellNX
             //I mean, if this check passed, this file should exist, if check failed, program exits before this line executes.
 
             //Update check...
+
+            /*
             if (File.Exists(AppDir + "updater.exe")) File.Delete(AppDir + "updater.exe");
             WebClient Client = new WebClient();
             bool allFine = true;
@@ -891,6 +894,8 @@ namespace RussellNX
                     }
                 }
             }
+
+    */
 
             prnt("WARNING: Installing Custom NSPs may get your Switch banned, be careful!\n");
 
