@@ -30,7 +30,7 @@ namespace RussellNX
         public static string RuntimePath = string.Empty;
         public static string FriendlyYYPName = string.Empty;
         public static string GameIconPath = AppDir + "default_icon.jpg";
-        public static string RNXVersionString = "1.5.1";
+        public static string RNXVersionString = "1.5.2";
 
         public MainForm()
         {
@@ -191,7 +191,7 @@ namespace RussellNX
                 DataLossCheckbox.Text = "Показывать окно о возможной потере данных перед выходом?";
                 LanguagesLabel.Text = "Поддерживаемые языки:";
 
-                /*
+                
                 aengCheckbox.Text = "Американский Английский";
                 freCheckbox.Text = "Французский";
                 spaCheckbox.Text = "Испанский";
@@ -200,7 +200,7 @@ namespace RussellNX
                 dutCheckbox.Text = "Нидерландский";
                 porCheckbox.Text = "Португальский";
                 gerCheckbox.Text = "Немецкий";
-                */
+                
 
                 LogTitle.Text = "Лог:";
                 ProjectPathLabel.Text = "Файл проекта:";
@@ -214,6 +214,7 @@ namespace RussellNX
                 BuildButton.Text = "Собрать .NSP!";
                 CleanLogBtn.Text = "Очистить лог";
                 ExportLogBtn.Text = "Сохранить лог";
+                ProjectConfigLabel.Text = "Имя конфигурации:";
             }
         }
 
@@ -237,7 +238,6 @@ namespace RussellNX
 
         private void BuildButton_Click(object sender, EventArgs e)
         {
-
             //Idiot checks. (a lot of)
             if (!File.Exists(ProjectPathBox.Text))
             {
@@ -284,16 +284,29 @@ namespace RussellNX
             if (((RuntimeVersion)RuntimeChooserBox.SelectedItem).IsNuBeta || (int.Parse(RuntimeVerString.Substring(4, 1)) > 3)) // if third integer in runtime version is >3 (newer than 2.2.3)
             {
                 string hash = "";
+                string pwniehash = "";
+
+                if (!File.Exists(AppDir + "PwnieCastle.Crypto.dll"))
+                {
+                    prnt("ERROR! PwnieCastle library doesn't exist, redownload RussellNX! Building aborted!");
+                    return;
+                }
+
                 using (var md5 = MD5.Create())
                 {
                     using (var stream = File.OpenRead(RuntimePath + "\\bin\\BouncyCastle.Crypto.dll"))
                     {
                         hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToUpperInvariant();
-                        stream.Dispose();
+                    }
+
+                    using (var stream = File.OpenRead(AppDir + "PwnieCastle.Crypto.dll"))
+                    {
+                        pwniehash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToUpperInvariant();
                     }
                 }
+
                 prnt("hash of BouncyCastle.Crypto.dll: " + hash);
-                if (hash != "D33FB0C43C654BC3F33BCC71F79CBE14") //hash of (new) PwnieCastle.Crypto.Dll
+                if (hash != pwniehash) //hash of (new) PwnieCastle.Crypto.Dll
                 {
                     DialogResult result = MessageBox.Show("Hey, your runtime is not vulnerable to public_key\nAnd it doesn't have PwnieCastle installed, would you like to copy over PwnieCastle.Crypto.dll from RussellNX directory to bypass /m=switch license check?", "PwnieCastle Message", MessageBoxButtons.YesNo);
                     if (result == DialogResult.No)
@@ -303,13 +316,10 @@ namespace RussellNX
                     }
                     else if (result == DialogResult.Yes)
                     {
-                        if (!File.Exists(AppDir + "PwnieCastle.Crypto.dll"))
-                        {
-                            prnt("ERROR! PwnieCastle library doesn't exist, redownload RussellNX! Building aborted!");
-                            return;
-                        }
                         prnt("Installing PwnieCastle.Crypto.dll...");
-                        File.Copy(RuntimePath + @"\bin\BouncyCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.bak");
+                        string bkpath = RuntimePath + @"\bin\BouncyCastle.Crypto.bak";
+                        if (!File.Exists(bkpath))
+                            File.Copy(RuntimePath + @"\bin\BouncyCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.bak");
                         File.Copy(AppDir + @"PwnieCastle.Crypto.dll", RuntimePath + @"\bin\BouncyCastle.Crypto.dll", true);
                         prnt("Done! Backup is saved in {RuntimeDir}\\bin\\BouncyCastle.Crypto.dll");
                     }
@@ -365,7 +375,12 @@ namespace RussellNX
             Directory.CreateDirectory(CacheDir);
             Directory.CreateDirectory(OutputDir);
 
-            string GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=5 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @""" /preprocess=""" + CacheDir + @"""";
+            // pwniecastle.crypto fix:
+            string TxtPath = Path.Combine(RuntimePath, "bin", "RussellNXFlag.txt");
+            prnt("Creating flag file at path " + TxtPath);
+            File.WriteAllText(TxtPath, "; This file is used to tell BouncyCastle.Crypto.dll to swap the public_key when needed.");
+
+            string GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=5 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=""" + ProjectConfigBox.Text + @""" /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @""" /preprocess=""" + CacheDir + @"""";
             prnt(GMACArgs);
             //return;
 
@@ -395,7 +410,7 @@ namespace RussellNX
             process.CancelOutputRead();
             
 
-            GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=5 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=default /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @"""";
+            GMACArgs = @" /c /zpex /mv=1 /iv=0 /rv=0 /bv=0 /j=5 /gn=""" + GameName + @""" /td=""" + TempDir + @""" /cd=""" + CacheDir + @""" /zpuf=""" + LicensePlistPath + @""" /m=switch /tgt=144115188075855872 /cvm /bt=exe /rt=vm /sh=True /nodnd /cfg=""" + ProjectConfigBox.Text + @""" /o=""" + OutputDir + @""" /optionsini=""" + INIDir + @""" /baseproject=""" + BaseProjPath + @""" " + @"""" + GameProjPath + @"""";
             process.StartInfo.Arguments = GMACArgs;
             prnt(GMACArgs);
 
@@ -407,6 +422,9 @@ namespace RussellNX
             process.WaitForExit();
             process.CancelErrorRead();
             process.CancelOutputRead();
+
+            prnt("\nDeleting flag file...\n");
+            File.Delete(TxtPath);
 
             prnt("\nGenerating control.nacp...");
             XDocument xml = XDocument.Load(AppDir + "runners\\dummy.xml");
@@ -477,7 +495,7 @@ namespace RussellNX
             var romfsdir = @".\build\romfs";
             var logodir = @".\build\logo";
             var controldir = @".\build\control";
-            args = @" -k """ + KeysBox.Text + @""" --keygeneration 5 --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo --sdkversion 07030200";
+            args = @" -k """ + KeysBox.Text + @""" --keygeneration 6 --exefsdir " + exefsdir + @" --romfsdir " + romfsdir + @" --logodir " + logodir + @" --controldir " + controldir + @" --nopatchnacplogo --sdkversion 09030209";
             prnt(args);
             process.StartInfo.Arguments = args;
             process.StartInfo.FileName = AppDir + "hacbrewpack.exe";
@@ -528,6 +546,11 @@ namespace RussellNX
             KeysBox.Text = data["Main"]["AppKeysPath"];
             GameIconPath = data["Main"]["AppIconPath"];
             RuntimeVerString = data["Main"]["RuntimeVersion"];
+            if (data["Main"].ContainsKey("ConfigurationName"))
+            {
+                ProjectConfigBox.Text = data["Main"]["ConfigurationName"];
+            }
+            
             foreach (RuntimeVersion item in RuntimeChooserBox.Items)
             {
                 if (item.Version == RuntimeVerString)
@@ -536,11 +559,13 @@ namespace RussellNX
                     break;
                 }
             }
+
             RuntimePath = ((RuntimeVersion)RuntimeChooserBox.SelectedItem).FullPath;
             FriendlyYYPName = Path.GetFileNameWithoutExtension(ProjectPathBox.Text);
             LoadCheckboxStr(data["Main"]["CheckboxState"]);
             prnt("GameName: " + FriendlyYYPName);
             prnt("RuntimePath: " + RuntimePath);
+            prnt("Configuration name: " + ProjectConfigBox.Text);
             prnt("Loaded!");
         }
 
@@ -557,6 +582,7 @@ namespace RussellNX
             data["Main"]["AppIconPath"] = GameIconPath;
             data["Main"]["RuntimeVersion"] = RuntimeVerString;
             data["Main"]["CheckboxState"] = RetCheckboxStr();
+            data["Main"]["ConfigurationName"] = ProjectConfigBox.Text;
             data["AppVersion"]["RNXVer"] = RNXVersionString;
             parser.WriteFile(AppDir + "RussellNX.ini", data);
             prnt("Saved!");
@@ -823,14 +849,13 @@ namespace RussellNX
             if (ci == "ru-RU") errStr = "ОШИБКА!\nRussellNX не имеет прав на чтение/запись в папке в которую вы его распаковали, переместите RussellNX в другое место. Детали: ";
 
             //Check for write access first.
-            try { File.WriteAllText(AppDir + "dircheck.txt", ""); }
+            try { File.WriteAllText(AppDir + "dircheck.txt", ""); File.Delete(AppDir + "dircheck.txt"); }
             catch (Exception e)
             {
                 //for some reason this messagebox doesn't wanna show up (??)
                 MessageBox.Show(errStr + e.ToString(), "Idiot Check Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
             }
-            File.Delete(AppDir + "dircheck.txt");
             //I mean, if this check passed, this file should exist, if check failed, program exits before this line executes.
 
             //Update check...
@@ -900,6 +925,7 @@ namespace RussellNX
             CheckForKeys(ci);
             RandomQuotePrint(ci);
             prnt("RussellNX Version " + RNXVersionString + " is waiting for you, master!");
+            prnt("I wish I could visit beautiful cities like Toronto or London, but I guess not today... :<");
         }
 
         private void RuntimeChooserBox_SelectedValueChanged(object sender, EventArgs e)

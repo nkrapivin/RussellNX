@@ -67,6 +67,8 @@
             this.ExportLogBtn = new System.Windows.Forms.Button();
             this.CleanLogBtn = new System.Windows.Forms.Button();
             this.RuntimeChooserBox = new System.Windows.Forms.ComboBox();
+            this.ProjectConfigLabel = new System.Windows.Forms.Label();
+            this.ProjectConfigBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.IconPicBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -192,7 +194,7 @@
             // BuildButton
             // 
             this.BuildButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BuildButton.Location = new System.Drawing.Point(1011, 649);
+            this.BuildButton.Location = new System.Drawing.Point(1011, 542);
             this.BuildButton.Name = "BuildButton";
             this.BuildButton.Size = new System.Drawing.Size(117, 23);
             this.BuildButton.TabIndex = 13;
@@ -226,7 +228,7 @@
             this.KeysLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.KeysLabel.AutoSize = true;
-            this.KeysLabel.Location = new System.Drawing.Point(700, 278);
+            this.KeysLabel.Location = new System.Drawing.Point(700, 313);
             this.KeysLabel.Name = "KeysLabel";
             this.KeysLabel.Size = new System.Drawing.Size(167, 13);
             this.KeysLabel.TabIndex = 17;
@@ -236,7 +238,7 @@
             // 
             this.KeysBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.KeysBox.Location = new System.Drawing.Point(700, 295);
+            this.KeysBox.Location = new System.Drawing.Point(700, 329);
             this.KeysBox.Name = "KeysBox";
             this.KeysBox.Size = new System.Drawing.Size(398, 20);
             this.KeysBox.TabIndex = 18;
@@ -244,7 +246,7 @@
             // KeysBtn
             // 
             this.KeysBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.KeysBtn.Location = new System.Drawing.Point(1104, 295);
+            this.KeysBtn.Location = new System.Drawing.Point(1104, 329);
             this.KeysBtn.Name = "KeysBtn";
             this.KeysBtn.Size = new System.Drawing.Size(24, 20);
             this.KeysBtn.TabIndex = 19;
@@ -268,10 +270,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.LogBox.DetectUrls = false;
-            this.LogBox.Location = new System.Drawing.Point(15, 364);
+            this.LogBox.Location = new System.Drawing.Point(15, 362);
             this.LogBox.Name = "LogBox";
             this.LogBox.ReadOnly = true;
-            this.LogBox.Size = new System.Drawing.Size(1113, 279);
+            this.LogBox.Size = new System.Drawing.Size(1113, 174);
             this.LogBox.TabIndex = 0;
             this.LogBox.Text = "";
             this.LogBox.WordWrap = false;
@@ -279,7 +281,7 @@
             // LogTitle
             // 
             this.LogTitle.AutoSize = true;
-            this.LogTitle.Location = new System.Drawing.Point(12, 348);
+            this.LogTitle.Location = new System.Drawing.Point(12, 346);
             this.LogTitle.Name = "LogTitle";
             this.LogTitle.Size = new System.Drawing.Size(28, 13);
             this.LogTitle.TabIndex = 22;
@@ -299,7 +301,7 @@
             // RuntimeLabelBox
             // 
             this.RuntimeLabelBox.AutoSize = true;
-            this.RuntimeLabelBox.Location = new System.Drawing.Point(274, 60);
+            this.RuntimeLabelBox.Location = new System.Drawing.Point(268, 52);
             this.RuntimeLabelBox.Name = "RuntimeLabelBox";
             this.RuntimeLabelBox.Size = new System.Drawing.Size(86, 13);
             this.RuntimeLabelBox.TabIndex = 23;
@@ -308,7 +310,7 @@
             // AdvancedOptionsLabel
             // 
             this.AdvancedOptionsLabel.AutoSize = true;
-            this.AdvancedOptionsLabel.Location = new System.Drawing.Point(274, 103);
+            this.AdvancedOptionsLabel.Location = new System.Drawing.Point(268, 86);
             this.AdvancedOptionsLabel.Name = "AdvancedOptionsLabel";
             this.AdvancedOptionsLabel.Size = new System.Drawing.Size(96, 13);
             this.AdvancedOptionsLabel.TabIndex = 26;
@@ -317,7 +319,7 @@
             // StartupAccCheckbox
             // 
             this.StartupAccCheckbox.AutoSize = true;
-            this.StartupAccCheckbox.Location = new System.Drawing.Point(274, 123);
+            this.StartupAccCheckbox.Location = new System.Drawing.Point(271, 103);
             this.StartupAccCheckbox.Name = "StartupAccCheckbox";
             this.StartupAccCheckbox.Size = new System.Drawing.Size(161, 17);
             this.StartupAccCheckbox.TabIndex = 27;
@@ -327,7 +329,7 @@
             // DataLossCheckbox
             // 
             this.DataLossCheckbox.AutoSize = true;
-            this.DataLossCheckbox.Location = new System.Drawing.Point(274, 143);
+            this.DataLossCheckbox.Location = new System.Drawing.Point(271, 126);
             this.DataLossCheckbox.Name = "DataLossCheckbox";
             this.DataLossCheckbox.Size = new System.Drawing.Size(234, 17);
             this.DataLossCheckbox.TabIndex = 28;
@@ -337,7 +339,7 @@
             // LanguagesLabel
             // 
             this.LanguagesLabel.AutoSize = true;
-            this.LanguagesLabel.Location = new System.Drawing.Point(274, 167);
+            this.LanguagesLabel.Location = new System.Drawing.Point(268, 146);
             this.LanguagesLabel.Name = "LanguagesLabel";
             this.LanguagesLabel.Size = new System.Drawing.Size(115, 13);
             this.LanguagesLabel.TabIndex = 29;
@@ -349,7 +351,7 @@
             this.aengCheckbox.Checked = true;
             this.aengCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.aengCheckbox.Enabled = false;
-            this.aengCheckbox.Location = new System.Drawing.Point(274, 187);
+            this.aengCheckbox.Location = new System.Drawing.Point(271, 162);
             this.aengCheckbox.Name = "aengCheckbox";
             this.aengCheckbox.Size = new System.Drawing.Size(104, 17);
             this.aengCheckbox.TabIndex = 30;
@@ -359,7 +361,7 @@
             // freCheckbox
             // 
             this.freCheckbox.AutoSize = true;
-            this.freCheckbox.Location = new System.Drawing.Point(274, 211);
+            this.freCheckbox.Location = new System.Drawing.Point(271, 185);
             this.freCheckbox.Name = "freCheckbox";
             this.freCheckbox.Size = new System.Drawing.Size(59, 17);
             this.freCheckbox.TabIndex = 31;
@@ -369,7 +371,7 @@
             // spaCheckbox
             // 
             this.spaCheckbox.AutoSize = true;
-            this.spaCheckbox.Location = new System.Drawing.Point(274, 231);
+            this.spaCheckbox.Location = new System.Drawing.Point(271, 323);
             this.spaCheckbox.Name = "spaCheckbox";
             this.spaCheckbox.Size = new System.Drawing.Size(64, 17);
             this.spaCheckbox.TabIndex = 32;
@@ -379,7 +381,7 @@
             // itaCheckbox
             // 
             this.itaCheckbox.AutoSize = true;
-            this.itaCheckbox.Location = new System.Drawing.Point(274, 251);
+            this.itaCheckbox.Location = new System.Drawing.Point(271, 208);
             this.itaCheckbox.Name = "itaCheckbox";
             this.itaCheckbox.Size = new System.Drawing.Size(54, 17);
             this.itaCheckbox.TabIndex = 33;
@@ -389,7 +391,7 @@
             // rusCheckbox
             // 
             this.rusCheckbox.AutoSize = true;
-            this.rusCheckbox.Location = new System.Drawing.Point(274, 274);
+            this.rusCheckbox.Location = new System.Drawing.Point(271, 231);
             this.rusCheckbox.Name = "rusCheckbox";
             this.rusCheckbox.Size = new System.Drawing.Size(64, 17);
             this.rusCheckbox.TabIndex = 34;
@@ -399,7 +401,7 @@
             // dutCheckbox
             // 
             this.dutCheckbox.AutoSize = true;
-            this.dutCheckbox.Location = new System.Drawing.Point(274, 295);
+            this.dutCheckbox.Location = new System.Drawing.Point(271, 254);
             this.dutCheckbox.Name = "dutCheckbox";
             this.dutCheckbox.Size = new System.Drawing.Size(55, 17);
             this.dutCheckbox.TabIndex = 35;
@@ -409,7 +411,7 @@
             // porCheckbox
             // 
             this.porCheckbox.AutoSize = true;
-            this.porCheckbox.Location = new System.Drawing.Point(274, 315);
+            this.porCheckbox.Location = new System.Drawing.Point(271, 277);
             this.porCheckbox.Name = "porCheckbox";
             this.porCheckbox.Size = new System.Drawing.Size(80, 17);
             this.porCheckbox.TabIndex = 36;
@@ -419,7 +421,7 @@
             // gerCheckbox
             // 
             this.gerCheckbox.AutoSize = true;
-            this.gerCheckbox.Location = new System.Drawing.Point(274, 338);
+            this.gerCheckbox.Location = new System.Drawing.Point(271, 300);
             this.gerCheckbox.Name = "gerCheckbox";
             this.gerCheckbox.Size = new System.Drawing.Size(63, 17);
             this.gerCheckbox.TabIndex = 37;
@@ -430,7 +432,7 @@
             // 
             this.ProjectSettingsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ProjectSettingsBtn.Location = new System.Drawing.Point(700, 321);
+            this.ProjectSettingsBtn.Location = new System.Drawing.Point(527, 327);
             this.ProjectSettingsBtn.MinimumSize = new System.Drawing.Size(167, 23);
             this.ProjectSettingsBtn.Name = "ProjectSettingsBtn";
             this.ProjectSettingsBtn.Size = new System.Drawing.Size(167, 23);
@@ -442,7 +444,7 @@
             // ExportLogBtn
             // 
             this.ExportLogBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ExportLogBtn.Location = new System.Drawing.Point(12, 649);
+            this.ExportLogBtn.Location = new System.Drawing.Point(15, 542);
             this.ExportLogBtn.Name = "ExportLogBtn";
             this.ExportLogBtn.Size = new System.Drawing.Size(121, 23);
             this.ExportLogBtn.TabIndex = 39;
@@ -453,7 +455,7 @@
             // CleanLogBtn
             // 
             this.CleanLogBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.CleanLogBtn.Location = new System.Drawing.Point(139, 649);
+            this.CleanLogBtn.Location = new System.Drawing.Point(142, 542);
             this.CleanLogBtn.Name = "CleanLogBtn";
             this.CleanLogBtn.Size = new System.Drawing.Size(117, 23);
             this.CleanLogBtn.TabIndex = 40;
@@ -465,17 +467,36 @@
             // 
             this.RuntimeChooserBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.RuntimeChooserBox.FormattingEnabled = true;
-            this.RuntimeChooserBox.Location = new System.Drawing.Point(277, 76);
+            this.RuntimeChooserBox.Location = new System.Drawing.Point(360, 49);
             this.RuntimeChooserBox.Name = "RuntimeChooserBox";
             this.RuntimeChooserBox.Size = new System.Drawing.Size(158, 21);
             this.RuntimeChooserBox.TabIndex = 41;
             this.RuntimeChooserBox.SelectedValueChanged += new System.EventHandler(this.RuntimeChooserBox_SelectedValueChanged);
             // 
+            // ProjectConfigLabel
+            // 
+            this.ProjectConfigLabel.AutoSize = true;
+            this.ProjectConfigLabel.Location = new System.Drawing.Point(700, 274);
+            this.ProjectConfigLabel.Name = "ProjectConfigLabel";
+            this.ProjectConfigLabel.Size = new System.Drawing.Size(101, 13);
+            this.ProjectConfigLabel.TabIndex = 42;
+            this.ProjectConfigLabel.Text = "Configuration name:";
+            // 
+            // ProjectConfigBox
+            // 
+            this.ProjectConfigBox.Location = new System.Drawing.Point(700, 290);
+            this.ProjectConfigBox.Name = "ProjectConfigBox";
+            this.ProjectConfigBox.Size = new System.Drawing.Size(428, 20);
+            this.ProjectConfigBox.TabIndex = 43;
+            this.ProjectConfigBox.Text = "Default";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1140, 684);
+            this.ClientSize = new System.Drawing.Size(1140, 577);
+            this.Controls.Add(this.ProjectConfigBox);
+            this.Controls.Add(this.ProjectConfigLabel);
             this.Controls.Add(this.RuntimeChooserBox);
             this.Controls.Add(this.CleanLogBtn);
             this.Controls.Add(this.ExportLogBtn);
@@ -567,6 +588,8 @@
         private System.Windows.Forms.Button ExportLogBtn;
         private System.Windows.Forms.Button CleanLogBtn;
         private System.Windows.Forms.ComboBox RuntimeChooserBox;
+        private System.Windows.Forms.Label ProjectConfigLabel;
+        private System.Windows.Forms.TextBox ProjectConfigBox;
     }
 }
 
