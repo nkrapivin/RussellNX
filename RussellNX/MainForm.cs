@@ -30,7 +30,7 @@ namespace RussellNX
         public static string RuntimePath = string.Empty;
         public static string FriendlyYYPName = string.Empty;
         public static string GameIconPath = AppDir + "default_icon.jpg";
-        public static string RNXVersionString = "1.5.3";
+        public static string RNXVersionString = "1.5.4";
 
         public MainForm()
         {
@@ -861,7 +861,7 @@ namespace RussellNX
 
             //Update check...
 
-            /*
+            
             if (File.Exists(AppDir + "updater.exe")) File.Delete(AppDir + "updater.exe");
             WebClient Client = new WebClient();
             bool allFine = true;
@@ -895,7 +895,7 @@ namespace RussellNX
                 }
             }
 
-    */
+    
 
             prnt("WARNING: Installing Custom NSPs may get your Switch banned, be careful!\n");
 
